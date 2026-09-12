@@ -32,6 +32,7 @@ const TABS = [
   ['formats',   'Format Map'],
   ['install',   'Install State'],
   ['library',   'Mod Library'],
+  ['build',     'Build'],
   ['decisions', 'Decisions'],
 ];
 
@@ -442,6 +443,119 @@ RENDER.library = async root => {
     esc(lib.extractor) + ' &middot; scanned ' +
     esc(String(lib.generated || '').replace('T', ' ')) + '. Regenerate with ' +
     '<code>py export_library.py</code>.'));
+};
+
+/* -------------------------------------------------------------------- BUILD */
+RENDER.build = async root => {
+  if (root.dataset.done) return; root.dataset.done = 1;
+  const b = await get('build');
+  if (!b) { root.appendChild(el('div', 'empty', 'build data missing')); return; }
+
+  root.appendChild(el('p', 'lede',
+    'The mod build, step by step, in the order the archives themselves ' +
+    'dictate rather than the order a mod page suggests. Each step says what ' +
+    'kind of install it is, because that decides everything: a TSLPatcher mod ' +
+    'edits shared tables in place, a loose-file mod just lands in ' +
+    '<code>override/</code> and last writer wins.'));
+
+  const steps = b.steps || [];
+  const count = k => steps.filter(s => s.state === k).length;
+  const g = el('div', 'grid');
+  g.style.gridTemplateColumns = 'repeat(auto-fill,minmax(210px,1fr))';
+  [
+    [num(count('done')),    'steps done'],
+    [num(count('blocked')), 'blocked'],
+    [num(count('ready')),   'ready to run'],
+    [num(steps.length),     'steps total'],
+  ].forEach(([v, l]) => {
+    const c = el('div', 'card');
+    c.appendChild(el('div', 'stat', esc(v) + '<small>' + esc(l) + '</small>'));
+    g.appendChild(c);
+  });
+  root.appendChild(g);
+
+  /* --- the executable ------------------------------------------------- */
+  const e = b.exe || {};
+  root.appendChild(el('h2', 'sec', 'The executable'));
+  root.appendChild(el('p', 'lede',
+    '3C-FD is a search-and-replace byte patcher: it rewrites shader strings ' +
+    'and one header flag <em>in place</em> and leaves the file exactly the ' +
+    'same length. Which is why this is tracked by hash and never by size ' +
+    '&mdash; a size check called a fully patched executable &ldquo;stock&rdquo;.'));
+  const ec = el('div', 'card');
+  const dl = el('dl', 'kv');
+  [
+    ['stock', e.stock_sha],
+    ['live', e.live_sha],
+    ['size', num(e.size) + ' bytes, unchanged'],
+    ['changed', num(e.bytes_changed) + ' bytes, ' + e.first_diff + ' to ' + e.last_diff],
+    ['PE flags', e.characteristics_before + ' → ' + e.characteristics_after +
+      (e.laa ? '  (LARGE_ADDRESS_AWARE set)' : '')],
+  ].forEach(([k, v]) => {
+    dl.appendChild(el('dt', null, esc(k)));
+    dl.appendChild(el('dd', null, esc(v)));
+  });
+  ec.appendChild(dl);
+  ec.appendChild(el('p', 'muted',
+    'Pristine copies kept: ' +
+    (e.pristine_copies || []).map(x => '<code>' + esc(x) + '</code>').join(', ')));
+  root.appendChild(ec);
+
+  /* --- step 1 detail --------------------------------------------------- */
+  const s1 = b.step1;
+  if (s1) {
+    root.appendChild(el('h2', 'sec', 'Step 1 — ' + esc(s1.name)));
+    const c = el('div', 'card');
+    c.appendChild(el('p', 'muted', esc(s1.finding)));
+    c.appendChild(el('p', 'faint', 'Build fingerprint: <code>' +
+      esc(s1.signature_match) + '</code>'));
+    root.appendChild(c);
+
+    const t = el('table');
+    t.innerHTML = '<thead><tr><th>Patch file</th><th class="mono">Blocks</th>' +
+      '<th>Applied</th><th>What it does</th></tr></thead>';
+    const tb = el('tbody');
+    (s1.patches || []).forEach(p => {
+      const tr = el('tr');
+      tr.innerHTML = '<td class="mono">' + esc(p.file) + '</td>' +
+        '<td class="mono">' + esc(p.blocks) + '</td>' +
+        '<td><span class="pill ' + (p.applied ? 'on' : 'no') + '">' +
+        (p.applied ? 'applied' : 'skipped') + '</span></td>' +
+        '<td class="muted">' + esc(p.what) + '</td>';
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb);
+    const sc = el('div', 'scroll'); sc.appendChild(t); root.appendChild(sc);
+
+    root.appendChild(el('h3', null, 'Verified afterwards, not assumed'));
+    const ul = el('ul', 'muted');
+    (s1.verification || []).forEach(v =>
+      ul.appendChild(el('li', null, esc(v))));
+    root.appendChild(ul);
+  }
+
+  /* --- the order ------------------------------------------------------- */
+  root.appendChild(el('h2', 'sec', 'The order'));
+  const t2 = el('table');
+  t2.innerHTML = '<thead><tr><th class="mono">#</th><th>Step</th><th>Kind</th>' +
+    '<th>State</th><th>Notes</th></tr></thead>';
+  const tb2 = el('tbody');
+  const pill = { done: 'on', blocked: 'off', ready: 'query' };
+  steps.forEach(s => {
+    const tr = el('tr');
+    tr.innerHTML = '<td class="mono">' + esc(s.n) + '</td>' +
+      '<td>' + esc(s.name) + '</td>' +
+      '<td class="mono faint">' + esc(s.kind) + '</td>' +
+      '<td><span class="pill ' + (pill[s.state] || 'no') + '">' +
+      esc(s.state) + '</span></td>' +
+      '<td class="muted">' + esc(s.note || '') + '</td>';
+    tb2.appendChild(tr);
+  });
+  t2.appendChild(tb2);
+  const sc2 = el('div', 'scroll'); sc2.appendChild(t2); root.appendChild(sc2);
+
+  root.appendChild(el('div', 'note',
+    'Updated ' + esc(String(b.updated || '').replace('T', ' ')) + '.'));
 };
 
 /* ---------------------------------------------------------------- DECISIONS */

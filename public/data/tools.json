@@ -1,5 +1,26 @@
 [
  {
+  "name": "archive_extract",
+  "sig": "(path: str = '', dest: str = '', confirm: bool = False, limit: int = 100) -> str",
+  "group": "query",
+  "summary": "Extract archives into 02_EXTRACTED, one mod per folder.",
+  "doc": "Extract archives into 02_EXTRACTED, one mod per folder.\n\nBlank path extracts the whole mod library. Each archive gets its OWN\nfolder: reusing one folder for two patcher mods overwrites the first one's\ntslpatchdata, which is a known and silent corruption path.\n\nUses WinRAR's `x` so a mod's directory tree survives -- `e` would flatten\nit and destroy the structure HoloPatcher needs. Nothing is trusted to the\nexit code alone: the destination is walked afterwards, and an extraction\nthat returns success but produced no files is reported as the failure it\nis. Author junk (Thumbs.db, .DS_Store) is removed on the way through.\n\nWithout confirm=True this only reports what it would do."
+ },
+ {
+  "name": "archive_list",
+  "sig": "(path: str, limit: int = 60) -> str",
+  "group": "query",
+  "summary": "List what is inside an archive WITHOUT extracting it.",
+  "doc": "List what is inside an archive WITHOUT extracting it.\n\nWorks for .rar (via UnRAR.exe) and .zip (via Python's stdlib). .7z and\nself-extracting .exe return nothing and say so -- no console tool WinRAR\nships can read them, and guessing would be worse than admitting it."
+ },
+ {
+  "name": "archive_test",
+  "sig": "(path: str = '', limit: int = 100) -> str",
+  "group": "query",
+  "summary": "CRC-test archives. Blank path tests the whole mod library.",
+  "doc": "CRC-test archives. Blank path tests the whole mod library.\n\nThis is the gate before any install. A truncated download is\nindistinguishable from a complete one by size, and it surfaces halfway\nthrough a patcher run -- after that patcher has already edited shared 2DAs\nand dialog.tlk in place, which is the worst possible moment for it."
+ },
+ {
   "name": "forge_backup",
   "sig": "(label: str = '') -> str",
   "group": "lifecycle",
@@ -75,6 +96,13 @@
   "group": "mods",
   "summary": "Install a TSLPatcher mod headlessly via HoloPatcher.",
   "doc": "Install a TSLPatcher mod headlessly via HoloPatcher.\n\nVortex flatly refuses this entire class of mod, and legacy TSLPatcher.exe\nis a GUI-only Delphi binary -- HoloPatcher's `--install --console` is the\nonly scriptable path. Takes a backup first, always."
+ },
+ {
+  "name": "mod_survey",
+  "sig": "(name: str = '', limit: int = 80) -> str",
+  "group": "mods",
+  "summary": "Classify every extracted mod: TSLPatcher, loose-file, or installer.",
+  "doc": "Classify every extracted mod: TSLPatcher, loose-file, or installer.\n\nThis is the fact that decides how each mod gets installed, and it cannot\nbe read off a mod page reliably. A tslpatchdata/ folder means mod_install\nvia HoloPatcher and means the mod edits shared 2DAs and dialog.tlk IN\nPLACE; loose files mean stage_add and are inert by comparison.\n\nAlso flags ResRefs longer than 16 characters, which the engine simply\nnever finds, with no error anywhere."
  },
  {
   "name": "mod_validate",
@@ -194,6 +222,13 @@
   "group": "query",
   "summary": "What modding tools are installed, their versions, and what each is for.",
   "doc": "What modding tools are installed, their versions, and what each is for."
+ },
+ {
+  "name": "toolchain_archiver",
+  "sig": "() -> str",
+  "group": "query",
+  "summary": "Which archiver the forge drives, and whether it is actually present.",
+  "doc": "Which archiver the forge drives, and whether it is actually present."
  },
  {
   "name": "twoda_add_row",
