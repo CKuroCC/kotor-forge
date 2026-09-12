@@ -534,6 +534,29 @@ RENDER.build = async root => {
     root.appendChild(ul);
   }
 
+  /* --- TSLRCM detail ---------------------------------------------------- */
+  const tslr = b.tslrcm;
+  if (tslr) {
+    root.appendChild(el('h2', 'sec', 'Step 2 — ' + esc(tslr.name)));
+    const c = el('div', 'card');
+    c.appendChild(el('p', 'muted', esc(tslr.finding)));
+    const d2 = el('dl', 'kv');
+    [
+      ['English', tslr.english_sha],
+      ['Russian', tslr.russian_sha],
+      ['landed', tslr.landed_sha],
+    ].forEach(([k, v]) => {
+      d2.appendChild(el('dt', null, esc(k)));
+      d2.appendChild(el('dd', null, esc(v)));
+    });
+    c.appendChild(d2);
+    root.appendChild(c);
+    const ul2 = el('ul', 'muted');
+    (tslr.verification || []).forEach(v =>
+      ul2.appendChild(el('li', null, esc(v))));
+    root.appendChild(ul2);
+  }
+
   /* --- the order ------------------------------------------------------- */
   root.appendChild(el('h2', 'sec', 'The order'));
   const t2 = el('table');

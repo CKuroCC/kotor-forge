@@ -1,5 +1,20 @@
 {
- "updated": "2026-09-12T17:45:00",
+ "updated": "2026-09-12T19:25:00",
+ "tslrcm": {
+  "name": "TSLRCM 1.8.6 -- the Russian dialog.tlk you nearly got",
+  "finding": "The installer is Inno Setup 5.6, which innoextract can open without running it -- so the entire 674-file payload was read before a single byte reached the game. That is how this surfaced: TWO dialog.tlk files ship inside, both writing to the same destination in the game root, and the language chosen at install time is what picks between them. One is English. One is Russian. Both carry 136,375 entries, so a wrong pick would not look like a failure -- it would look like a successful TSLRCM install with every line of dialogue in Russian. The install was therefore run with /LANG=english forced, and the result verified by hash rather than by eye.",
+  "english_sha": "e501c665f7763bf9c63ac44e3a034a6969abbc6f0023096d8e137a400aa23e25",
+  "russian_sha": "4e42a2183f52169244a55ba6416e7bc0923ac04d1c408ae866136162d3a0df82",
+  "landed_sha": "e501c665f7763bf9c63ac44e3a034a6969abbc6f0023096d8e137a400aa23e25",
+  "verification": [
+   "dialog.tlk on disk hashes to the English variant, not the Russian one.",
+   "136,375 entries, +46 over stock, and all 46 carry text -- the first is 'Finding The HK Factory'.",
+   "All four verified achievement StrRefs read identical to the stock table.",
+   "swkotor2.exe still hashes to the 3C-FD baseline -- TSLRCM did not touch it.",
+   "83 .mod files landed in modules/, exactly the 83 the installer ships, onto a folder that had none.",
+   "716 files installed, 7 directories created, 0 errors in the install log."
+  ]
+ },
  "exe": {
   "stock_sha": "6a522e71631dcee93467bd2010f3b23d9145326e1e2e89305f13ab104dbbffef",
   "live_sha": "4ab72fc1ab082f427e008cda32fc5602d27b4e12fef48c4a1a2c6f7b2f36fb5a",
@@ -44,10 +59,10 @@
  "steps": [
   {"n": 1,  "name": "3C-FD Tool v4.1.2", "kind": "binary patch", "state": "done",
    "note": "4 patch files, 9 blocks, Borderless deliberately skipped"},
-  {"n": 2,  "name": "TSLRCM 1.8.6", "kind": "installer", "state": "blocked",
-   "note": "Chrome cancelled the download; Deadly Stream is throttling"},
-  {"n": 3,  "name": "K2 Community Patch 1.6.3", "kind": "tslpatcher", "state": "ready",
-   "note": "6 shared 2DAs, 15 GFF patches, 8 install folders -- the heaviest patcher here"},
+  {"n": 2,  "name": "TSLRCM 1.8.6", "kind": "installer", "state": "done",
+   "note": "716 files, 0 errors. English dialog.tlk confirmed by hash -- the installer also ships a Russian one to the same path"},
+  {"n": 3,  "name": "K2 Community Patch 1.6.3", "kind": "tslpatcher", "state": "done",
+   "note": "951 patches, 0 errors, 0 warnings, 8 seconds. Touched dialog.tlk exactly as much as it declared: not at all"},
   {"n": 4,  "name": "Water Restoration 3.0", "kind": "loose", "state": "ready",
    "note": "wins dan_mwfl.tpc over Ultimate Dantooine"},
   {"n": 5,  "name": "Stutter Fix / Force Cage 1.1.0", "kind": "loose", "state": "ready", "note": "7 files"},

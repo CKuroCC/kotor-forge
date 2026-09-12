@@ -1,8 +1,8 @@
 {
- "generated": "2026-09-12T17:24:42",
+ "generated": "2026-09-12T19:23:15",
  "root": "D:\\GameMods\\KOTOR2\\03_MOD-LIBRARY",
- "total_files": 48,
- "total_bytes": 32390526741,
+ "total_files": 49,
+ "total_bytes": 32528474396,
  "verified_ok": 45,
  "verified_fail": 0,
  "extractor": "WinRAR 7.23 x64",
@@ -38,12 +38,17 @@
      "verify": "ok"
     },
     {
+     "name": "tslrcm2022.exe",
+     "bytes": 137947655,
+     "verify": "skipped"
+    },
+    {
      "name": "water_restoration_3.0.zip",
      "bytes": 16732673,
      "verify": "ok"
     }
    ],
-   "bytes": 97256060
+   "bytes": 235203715
   },
   {
    "key": "02_lightsabers",
