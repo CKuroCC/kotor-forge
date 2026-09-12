@@ -20,8 +20,14 @@ from pathlib import Path
 LIB = Path(r"D:\GameMods\KOTOR2\03_MOD-LIBRARY")
 OUT = Path(__file__).resolve().parent / "public" / "data" / "library.json"
 CACHE = Path(__file__).resolve().parent / "verify-cache.json"
-SEVENZIP = Path(r"C:\Program Files\7-Zip\7z.exe")
-ARCHIVE_EXT = {".7z", ".zip", ".rar", ".exe"}
+
+# WinRAR is the archiver on this machine, so it is the one that certifies the
+# library. WinRAR.exe is a GUI binary -- it takes the same commands and exit
+# codes as Rar.exe but writes nothing to stdout, so the verdict comes from the
+# exit code alone. Only rc 0 counts: rc 1 is "warning" and WinRAR also returns
+# it for a file that is not an archive at all.
+WINRAR = Path(r"C:\Program Files\WinRAR\WinRAR.exe")
+ARCHIVE_EXT = {".7z", ".zip", ".rar"}
 
 # Curated, ordered. Keys must match the folder names on disk.
 GROUPS = [
@@ -66,12 +72,12 @@ def verify(path: Path, cache: dict) -> str:
     key = f"{path.name}|{path.stat().st_size}"
     if key in cache:
         return cache[key]
-    if path.suffix.lower() not in ARCHIVE_EXT or path.suffix.lower() == ".exe":
+    if path.suffix.lower() not in ARCHIVE_EXT:
         cache[key] = "skipped"
         return "skipped"
-    if not SEVENZIP.exists():
+    if not WINRAR.exists():
         return "skipped"
-    rc = subprocess.run([str(SEVENZIP), "t", "--", str(path)],
+    rc = subprocess.run([str(WINRAR), "t", "-ibck", "-y", str(path)],
                         capture_output=True).returncode
     cache[key] = "ok" if rc == 0 else "fail"
     return cache[key]
@@ -110,36 +116,55 @@ def main() -> int:
         "total_bytes": total_bytes,
         "verified_ok": ok,
         "verified_fail": bad,
-        "extractor": "7-Zip 26.03 x64" if SEVENZIP.exists() else "missing",
+        "extractor": "WinRAR 7.23 x64" if WINRAR.exists() else "missing",
         "groups": groups,
         "blockers": [
             {
                 "state": "blocked",
-                "title": "TSLRCM is fully downloaded and held by Chrome",
-                "body": "Both copies sit in D:\\Downloads as Unconfirmed "
-                        "*.crdownload at exactly 137,947,655 bytes -- the "
-                        "complete 131.56 MB. TSLRCM ships as a .exe "
-                        "self-extracting installer and Chrome Safe Browsing "
-                        "quarantines uncommon executables by default. The bytes "
-                        "are already down; only the confirmation is missing. "
-                        "Ctrl+J, then Keep. Dismissing a browser security "
-                        "prompt is a user-only action by design, and the "
-                        "third-party Google Drive re-host linked in a forum "
-                        "review is not an acceptable substitute for the most "
+                "title": "TSLRCM: Chrome cancelled the download, so there is "
+                         "no Keep button to click",
+                "body": "Chrome's own downloads record says target "
+                        "tslrcm2022.exe, state CANCELLED, interrupt 41 = "
+                        "USER_SHUTDOWN, danger DANGEROUS_FILE. That danger "
+                        "label is Chrome's name for the file TYPE -- what "
+                        "every .exe gets -- not a Safe Browsing detection: "
+                        "there is no DANGEROUS_CONTENT, URL or HOST on the "
+                        "record. Chrome was shut down while the confirmation "
+                        "was outstanding, which killed the entry, so the "
+                        "earlier advice to press Keep pointed at a control "
+                        "that no longer exists. One orphaned .crdownload "
+                        "survives at exactly the published 137,947,655 bytes "
+                        "with an MZ header, but neither WinRAR nor 7-Zip can "
+                        "open it, which rules out SFX and NSIS and means its "
+                        "contents cannot be inspected without running it. So "
+                        "it gets re-downloaded cleanly rather than promoted, "
+                        "and the third-party Google Drive re-host linked in a "
+                        "forum review is not a substitute for the most "
                         "load-bearing mod in the build.",
             },
             {
                 "state": "blocked",
-                "title": "Steam Cloud is SHA-tracking the savegames",
+                "title": "Deadly Stream is throttling the whole site",
+                "body": "After roughly 30 GB pulled in a couple of hours, "
+                        "every Deadly Stream page started returning a browser "
+                        "error -- individual file pages and the file index "
+                        "alike, in three separate tabs including brand-new "
+                        "ones. Not page-specific and not a login problem. The "
+                        "remaining download waits for the throttle to lift; "
+                        "retrying harder is how an account earns a real block.",
+            },
+            {
+                "state": "clear",
+                "title": "Steam Cloud is off -- resolved",
                 "body": "remotecache.vdf under userdata\\138831487\\208580 "
                         "records a SHA for every save file, and the saves "
                         "themselves live in the game folder's cloudsaves\\ "
-                        "directory. A surgical 4-byte credits patch changes "
-                        "that SHA, so Steam can offer to restore its own copy "
-                        "and silently undo the edit. The last recorded sync was "
-                        "2025-02-05, so the remote copy is already stale. Fix: "
-                        "Library, KOTOR II, Properties, General, uncheck Steam "
-                        "Cloud.",
+                        "directory, so a surgical 4-byte credits patch changes "
+                        "that SHA and Steam could have offered to restore its "
+                        "own copy over the edit -- from a sync last recorded "
+                        "2025-02-05, months stale. Julian turned Steam Cloud "
+                        "off for appid 208580 on 2026-09-12. The save tools "
+                        "are now safe to use.",
             },
             {
                 "state": "clear",

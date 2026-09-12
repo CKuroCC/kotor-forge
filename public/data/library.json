@@ -1,11 +1,11 @@
 {
- "generated": "2026-09-12T16:43:59",
+ "generated": "2026-09-12T17:24:42",
  "root": "D:\\GameMods\\KOTOR2\\03_MOD-LIBRARY",
  "total_files": 48,
  "total_bytes": 32390526741,
  "verified_ok": 45,
  "verified_fail": 0,
- "extractor": "7-Zip 26.03 x64",
+ "extractor": "WinRAR 7.23 x64",
  "groups": [
   {
    "key": "00_engine-fixes",
@@ -323,13 +323,18 @@
  "blockers": [
   {
    "state": "blocked",
-   "title": "TSLRCM is fully downloaded and held by Chrome",
-   "body": "Both copies sit in D:\\Downloads as Unconfirmed *.crdownload at exactly 137,947,655 bytes -- the complete 131.56 MB. TSLRCM ships as a .exe self-extracting installer and Chrome Safe Browsing quarantines uncommon executables by default. The bytes are already down; only the confirmation is missing. Ctrl+J, then Keep. Dismissing a browser security prompt is a user-only action by design, and the third-party Google Drive re-host linked in a forum review is not an acceptable substitute for the most load-bearing mod in the build."
+   "title": "TSLRCM: Chrome cancelled the download, so there is no Keep button to click",
+   "body": "Chrome's own downloads record says target tslrcm2022.exe, state CANCELLED, interrupt 41 = USER_SHUTDOWN, danger DANGEROUS_FILE. That danger label is Chrome's name for the file TYPE -- what every .exe gets -- not a Safe Browsing detection: there is no DANGEROUS_CONTENT, URL or HOST on the record. Chrome was shut down while the confirmation was outstanding, which killed the entry, so the earlier advice to press Keep pointed at a control that no longer exists. One orphaned .crdownload survives at exactly the published 137,947,655 bytes with an MZ header, but neither WinRAR nor 7-Zip can open it, which rules out SFX and NSIS and means its contents cannot be inspected without running it. So it gets re-downloaded cleanly rather than promoted, and the third-party Google Drive re-host linked in a forum review is not a substitute for the most load-bearing mod in the build."
   },
   {
    "state": "blocked",
-   "title": "Steam Cloud is SHA-tracking the savegames",
-   "body": "remotecache.vdf under userdata\\138831487\\208580 records a SHA for every save file, and the saves themselves live in the game folder's cloudsaves\\ directory. A surgical 4-byte credits patch changes that SHA, so Steam can offer to restore its own copy and silently undo the edit. The last recorded sync was 2025-02-05, so the remote copy is already stale. Fix: Library, KOTOR II, Properties, General, uncheck Steam Cloud."
+   "title": "Deadly Stream is throttling the whole site",
+   "body": "After roughly 30 GB pulled in a couple of hours, every Deadly Stream page started returning a browser error -- individual file pages and the file index alike, in three separate tabs including brand-new ones. Not page-specific and not a login problem. The remaining download waits for the throttle to lift; retrying harder is how an account earns a real block."
+  },
+  {
+   "state": "clear",
+   "title": "Steam Cloud is off -- resolved",
+   "body": "remotecache.vdf under userdata\\138831487\\208580 records a SHA for every save file, and the saves themselves live in the game folder's cloudsaves\\ directory, so a surgical 4-byte credits patch changes that SHA and Steam could have offered to restore its own copy over the edit -- from a sync last recorded 2025-02-05, months stale. Julian turned Steam Cloud off for appid 208580 on 2026-09-12. The save tools are now safe to use."
   },
   {
    "state": "clear",
