@@ -1,0 +1,72 @@
+{
+ "rejected": [
+  {
+   "name": "nwnnsscomp",
+   "verdict": "six incompatible builds",
+   "why": "The standard NSS compiler is not one program. At least six builds circulate (TSLPatcher, KOTOR Tool, v1.3, KOTOR Scripting Tool, DeNCS, knsscomp) and they disagree on command-line syntax so completely that PyKotor identifies which one you have by SHA-256 of the executable before deciding how to call it. Its own source comments that no version offers backwards compatibility with any other. KOTOR Forge sidesteps the whole problem: PyKotor compiles NSS to NCS in-process, which is what HoloPatcher already does.",
+   "url": "https://deadlystream.com/topic/8846-nwnnsscomp-versions/"
+  },
+  {
+   "name": "KOTOR Tool (Fred Tetra)",
+   "verdict": "2013, .NET 1.1, GUI only",
+   "why": "Still the tool every old tutorial assumes, and still the most-downloaded extractor on Deadly Stream. It has had no update since January 2013, requires .NET Framework 1.1 (long EOL, needs compatibility shims on modern Windows), is Windows-only, has no scriptable CLI, and its DLG editor is known-broken. Its ERF builder remains its most reliable component. Nothing about it belongs in an automated pipeline.",
+   "url": "https://deadlystream.com/files/file/280-kotor-tool/"
+  },
+  {
+   "name": "MDLedit",
+   "verdict": "frozen 2017, GUI only",
+   "why": "The binary-to-ASCII model compiler modders reach for. Version 1.0.3 shipped in November 2017 and nothing has followed; the OpenKotOR mirror of it is archived. It is GUI-only, so it cannot be driven. For models, PyKotor's mdl module handles both binary and ASCII in-process, and KotorBlender handles anything needing actual mesh work.",
+   "url": "https://deadlystream.com/files/file/1150-mdledit/"
+  },
+  {
+   "name": "Vortex",
+   "verdict": "refuses TSLPatcher mods outright",
+   "why": "Nexus Mods' manager does have an official KOTOR extension registering both games. But read its installer code: if an archive contains tslpatcher.exe or a tslpatchdata folder, it raises a hard error and refuses to install. That excludes most substantial KOTOR II mods. Vortex handles loose-override and root-structure mods only.",
+   "url": "https://github.com/Nexus-Mods/vortex-games/tree/master/game-sw-kotor"
+  },
+  {
+   "name": "KotorMCP",
+   "verdict": "read-only, stalled, source 404",
+   "why": "An MCP server on PyKotor already exists on PyPI, by the same author. It is worth knowing about: five tools, a sensible installation-caching design, and LLM-shaped resource summaries. But every one of its tools is read-only, its last release was December 2025, and its declared source repository returns 404 under both of the org names it has lived at. Useful as a design precedent; not a dependency.",
+   "url": "https://pypi.org/project/kotormcp/"
+  },
+  {
+   "name": "xoreos-tools",
+   "verdict": "duplicates PyKotor, stricter licence",
+   "why": "Actively maintained and genuinely good: unerf, unrim, gff2xml, tlk2xml, convert2da, ncsdis, ncsdecomp. But it is a set of external binaries that duplicate what PyKotor already does in-process, and it is GPL-3.0 where PyKotor is LGPL. The one thing it has that nothing else does is unobb, for Aspyr's mobile and console virtual filesystem. Kept on the shelf for exactly that.",
+   "url": "https://github.com/xoreos/xoreos-tools"
+  }
+ ],
+ "watched": [
+  {
+   "name": "HolocronToolset",
+   "why": "The GUI editor suite over the same PyKotor library this server uses. Runs with no install via uvx holocrontoolset. The right tool when the job is visual -- editing a dialogue tree or placing objects in an area -- rather than scriptable.",
+   "url": "https://pypi.org/project/holocrontoolset/"
+  },
+  {
+   "name": "KotorBlender",
+   "why": "Blender addon for MDL import/export with animations and walkmeshes, plus LYT and PTH. The real model pipeline. Drivable headlessly via blender --background --python if model work ever needs automating.",
+   "url": "https://github.com/seedhartha/kotorblender"
+  },
+  {
+   "name": "KOTORModSync",
+   "why": "Orchestrates multi-mod installs by driving TSLPatcher/HoloPatcher from a TOML instruction file. The closest thing the community has to a reproducible mod build, and the reason HoloPatcher grew a CLI at all.",
+   "url": "https://deadlystream.com/files/file/2317-kotormodsync/"
+  },
+  {
+   "name": "bioware-kaitai-formats",
+   "why": "BioWare's formats written as Kaitai Struct .ksy definitions, which compile to parsers in several languages. PyKotor already vendors generated output from it. The best machine-readable spec oracle available when a byte layout needs checking.",
+   "url": "https://github.com/OpenKotOR/bioware-kaitai-formats"
+  },
+  {
+   "name": "KotOR.js",
+   "why": "The most active Odyssey-engine reimplementation, in TypeScript, running in a browser. Valuable as living documentation of how the engine actually interprets these formats.",
+   "url": "https://github.com/KobaltBlu/KotOR.js"
+  },
+  {
+   "name": "reone",
+   "why": "Clean-room C++ reimplementation. Notable for a real NCS decompiler built on an expression-tree IR, and for tooling that generates LIP lipsync data from audio.",
+   "url": "https://github.com/OpenKotOR/reone"
+  }
+ ]
+}

@@ -1,0 +1,461 @@
+{
+ "game_dir": "D:\\SteamLibrary\\steamapps\\common\\Knights of the Old Republic II",
+ "modules_files": 246,
+ "area_codes": 82,
+ "chitin_resources": 18439,
+ "texturepacks": [
+  "swpc_tex_gui.erf",
+  "swpc_tex_tpa.erf",
+  "swpc_tex_tpb.erf",
+  "swpc_tex_tpc.erf"
+ ],
+ "override_files": 60,
+ "override_bytes": 101353395,
+ "stock_baseline": 60,
+ "stock_captured": "2026-09-12T13:34:45",
+ "mods_added": [],
+ "mods_changed": [],
+ "resources_by_type": {
+  "tpc": 3801,
+  "mdl": 3237,
+  "mdx": 3237,
+  "wav": 2265,
+  "wok": 1236,
+  "uti": 994,
+  "nss": 638,
+  "ncs": 612,
+  "2da": 424,
+  "utp": 383,
+  "dwk": 324,
+  "pwk": 304,
+  "utc": 284,
+  "gui": 159,
+  "utd": 104,
+  "lyt": 86,
+  "vis": 81,
+  "ssf": 70,
+  "ute": 65,
+  "utt": 34,
+  "dlg": 30,
+  "txi": 26,
+  "itp": 18,
+  "tga": 10,
+  "utw": 9,
+  "btc": 3,
+  "ltr": 3,
+  "jrl": 1,
+  "bic": 1
+ },
+ "areas": {
+  "001EBO": [
+   "001EBO.rim",
+   "001EBO_dlg.erf",
+   "001EBO_s.rim"
+  ],
+  "002EBO": [
+   "002EBO.rim",
+   "002EBO_dlg.erf",
+   "002EBO_s.rim"
+  ],
+  "003EBO": [
+   "003EBO.rim",
+   "003EBO_dlg.erf",
+   "003EBO_s.rim"
+  ],
+  "004EBO": [
+   "004EBO.rim",
+   "004EBO_dlg.erf",
+   "004EBO_s.rim"
+  ],
+  "005EBO": [
+   "005EBO.rim",
+   "005EBO_dlg.erf",
+   "005EBO_s.rim"
+  ],
+  "006EBO": [
+   "006EBO.rim",
+   "006EBO_dlg.erf",
+   "006EBO_s.rim"
+  ],
+  "007EBO": [
+   "007EBO.rim",
+   "007EBO_dlg.erf",
+   "007EBO_s.rim"
+  ],
+  "101PER": [
+   "101PER.rim",
+   "101PER_dlg.erf",
+   "101PER_s.rim"
+  ],
+  "102PER": [
+   "102PER.rim",
+   "102PER_dlg.erf",
+   "102PER_s.rim"
+  ],
+  "103PER": [
+   "103PER.rim",
+   "103PER_dlg.erf",
+   "103PER_s.rim"
+  ],
+  "104PER": [
+   "104PER.rim",
+   "104PER_dlg.erf",
+   "104PER_s.rim"
+  ],
+  "105PER": [
+   "105PER.rim",
+   "105PER_dlg.erf",
+   "105PER_s.rim"
+  ],
+  "106PER": [
+   "106PER.rim",
+   "106PER_dlg.erf",
+   "106PER_s.rim"
+  ],
+  "107PER": [
+   "107PER.rim",
+   "107PER_dlg.erf",
+   "107PER_s.rim"
+  ],
+  "151HAR": [
+   "151HAR.rim",
+   "151HAR_dlg.erf",
+   "151HAR_s.rim"
+  ],
+  "152HAR": [
+   "152HAR.rim",
+   "152HAR_dlg.erf",
+   "152HAR_s.rim"
+  ],
+  "153HAR": [
+   "153HAR.rim",
+   "153HAR_dlg.erf",
+   "153HAR_s.rim"
+  ],
+  "154HAR": [
+   "154HAR.rim",
+   "154HAR_dlg.erf",
+   "154HAR_s.rim"
+  ],
+  "201TEL": [
+   "201TEL.rim",
+   "201TEL_dlg.erf",
+   "201TEL_s.rim"
+  ],
+  "202TEL": [
+   "202TEL.rim",
+   "202TEL_dlg.erf",
+   "202TEL_s.rim"
+  ],
+  "203TEL": [
+   "203TEL.rim",
+   "203TEL_dlg.erf",
+   "203TEL_s.rim"
+  ],
+  "204TEL": [
+   "204TEL.rim",
+   "204TEL_dlg.erf",
+   "204TEL_s.rim"
+  ],
+  "205TEL": [
+   "205TEL.rim",
+   "205TEL_dlg.erf",
+   "205TEL_s.rim"
+  ],
+  "207TEL": [
+   "207TEL.rim",
+   "207TEL_dlg.erf",
+   "207TEL_s.rim"
+  ],
+  "208TEL": [
+   "208TEL.rim",
+   "208TEL_dlg.erf",
+   "208TEL_s.rim"
+  ],
+  "209TEL": [
+   "209TEL.rim",
+   "209TEL_dlg.erf",
+   "209TEL_s.rim"
+  ],
+  "211TEL": [
+   "211TEL.rim",
+   "211TEL_dlg.erf",
+   "211TEL_s.rim"
+  ],
+  "220TEL": [
+   "220TEL.rim",
+   "220TEL_dlg.erf",
+   "220TEL_s.rim"
+  ],
+  "221TEL": [
+   "221TEL.rim",
+   "221TEL_dlg.erf",
+   "221TEL_s.rim"
+  ],
+  "222TEL": [
+   "222TEL.rim",
+   "222TEL_dlg.erf",
+   "222TEL_s.rim"
+  ],
+  "231TEL": [
+   "231TEL.rim",
+   "231TEL_dlg.erf",
+   "231TEL_s.rim"
+  ],
+  "232TEL": [
+   "232TEL.rim",
+   "232TEL_dlg.erf",
+   "232TEL_s.rim"
+  ],
+  "233TEL": [
+   "233TEL.rim",
+   "233TEL_dlg.erf",
+   "233TEL_s.rim"
+  ],
+  "261TEL": [
+   "261TEL.rim",
+   "261TEL_dlg.erf",
+   "261TEL_s.rim"
+  ],
+  "262TEL": [
+   "262TEL.rim",
+   "262TEL_dlg.erf",
+   "262TEL_s.rim"
+  ],
+  "301NAR": [
+   "301NAR.rim",
+   "301NAR_dlg.erf",
+   "301NAR_s.rim"
+  ],
+  "302NAR": [
+   "302NAR.rim",
+   "302NAR_dlg.erf",
+   "302NAR_s.rim"
+  ],
+  "303NAR": [
+   "303NAR.rim",
+   "303NAR_dlg.erf",
+   "303NAR_s.rim"
+  ],
+  "304NAR": [
+   "304NAR.rim",
+   "304NAR_dlg.erf",
+   "304NAR_s.rim"
+  ],
+  "305NAR": [
+   "305NAR.rim",
+   "305NAR_dlg.erf",
+   "305NAR_s.rim"
+  ],
+  "306NAR": [
+   "306NAR.rim",
+   "306NAR_dlg.erf",
+   "306NAR_s.rim"
+  ],
+  "351NAR": [
+   "351NAR.rim",
+   "351NAR_dlg.erf",
+   "351NAR_s.rim"
+  ],
+  "352NAR": [
+   "352NAR.rim",
+   "352NAR_dlg.erf",
+   "352NAR_s.rim"
+  ],
+  "371NAR": [
+   "371NAR.rim",
+   "371NAR_dlg.erf",
+   "371NAR_s.rim"
+  ],
+  "401DXN": [
+   "401DXN.rim",
+   "401DXN_dlg.erf",
+   "401DXN_s.rim"
+  ],
+  "402DXN": [
+   "402DXN.rim",
+   "402DXN_dlg.erf",
+   "402DXN_s.rim"
+  ],
+  "403DXN": [
+   "403DXN.rim",
+   "403DXN_dlg.erf",
+   "403DXN_s.rim"
+  ],
+  "404DXN": [
+   "404DXN.rim",
+   "404DXN_dlg.erf",
+   "404DXN_s.rim"
+  ],
+  "410DXN": [
+   "410DXN.rim",
+   "410DXN_dlg.erf",
+   "410DXN_s.rim"
+  ],
+  "411DXN": [
+   "411DXN.rim",
+   "411DXN_dlg.erf",
+   "411DXN_s.rim"
+  ],
+  "421DXN": [
+   "421DXN.rim",
+   "421DXN_dlg.erf",
+   "421DXN_s.rim"
+  ],
+  "501OND": [
+   "501OND.rim",
+   "501OND_dlg.erf",
+   "501OND_s.rim"
+  ],
+  "502OND": [
+   "502OND.rim",
+   "502OND_dlg.erf",
+   "502OND_s.rim"
+  ],
+  "503OND": [
+   "503OND.rim",
+   "503OND_dlg.erf",
+   "503OND_s.rim"
+  ],
+  "504OND": [
+   "504OND.rim",
+   "504OND_dlg.erf",
+   "504OND_s.rim"
+  ],
+  "505OND": [
+   "505OND.rim",
+   "505OND_dlg.erf",
+   "505OND_s.rim"
+  ],
+  "506OND": [
+   "506OND.rim",
+   "506OND_dlg.erf",
+   "506OND_s.rim"
+  ],
+  "510OND": [
+   "510OND.rim",
+   "510OND_dlg.erf",
+   "510OND_s.rim"
+  ],
+  "511OND": [
+   "511OND.rim",
+   "511OND_dlg.erf",
+   "511OND_s.rim"
+  ],
+  "512OND": [
+   "512OND.rim",
+   "512OND_dlg.erf",
+   "512OND_s.rim"
+  ],
+  "601DAN": [
+   "601DAN.rim",
+   "601DAN_dlg.erf",
+   "601DAN_s.rim"
+  ],
+  "602DAN": [
+   "602DAN.rim",
+   "602DAN_dlg.erf",
+   "602DAN_s.rim"
+  ],
+  "603DAN": [
+   "603DAN.rim",
+   "603DAN_dlg.erf",
+   "603DAN_s.rim"
+  ],
+  "604DAN": [
+   "604DAN.rim",
+   "604DAN_dlg.erf",
+   "604DAN_s.rim"
+  ],
+  "605DAN": [
+   "605DAN.rim",
+   "605DAN_dlg.erf",
+   "605DAN_s.rim"
+  ],
+  "610DAN": [
+   "610DAN.rim",
+   "610DAN_dlg.erf",
+   "610DAN_s.rim"
+  ],
+  "650DAN": [
+   "650DAN.rim",
+   "650DAN_dlg.erf",
+   "650DAN_s.rim"
+  ],
+  "701KOR": [
+   "701KOR.rim",
+   "701KOR_dlg.erf",
+   "701KOR_s.rim"
+  ],
+  "702KOR": [
+   "702KOR.rim",
+   "702KOR_dlg.erf",
+   "702KOR_s.rim"
+  ],
+  "710KOR": [
+   "710KOR.rim",
+   "710KOR_dlg.erf",
+   "710KOR_s.rim"
+  ],
+  "711KOR": [
+   "711KOR.rim",
+   "711KOR_dlg.erf",
+   "711KOR_s.rim"
+  ],
+  "851NIH": [
+   "851NIH.rim",
+   "851NIH_dlg.erf",
+   "851NIH_s.rim"
+  ],
+  "852NIH": [
+   "852NIH.rim",
+   "852NIH_dlg.erf",
+   "852NIH_s.rim"
+  ],
+  "853NIH": [
+   "853NIH.rim",
+   "853NIH_dlg.erf",
+   "853NIH_s.rim"
+  ],
+  "901MAL": [
+   "901MAL.rim",
+   "901MAL_dlg.erf",
+   "901MAL_s.rim"
+  ],
+  "902MAL": [
+   "902MAL.rim",
+   "902MAL_dlg.erf",
+   "902MAL_s.rim"
+  ],
+  "903MAL": [
+   "903MAL.rim",
+   "903MAL_dlg.erf",
+   "903MAL_s.rim"
+  ],
+  "904MAL": [
+   "904MAL.rim",
+   "904MAL_dlg.erf",
+   "904MAL_s.rim"
+  ],
+  "905MAL": [
+   "905MAL.rim",
+   "905MAL_dlg.erf",
+   "905MAL_s.rim"
+  ],
+  "906MAL": [
+   "906MAL.rim",
+   "906MAL_dlg.erf",
+   "906MAL_s.rim"
+  ],
+  "907MAL": [
+   "907MAL.rim",
+   "907MAL_dlg.erf",
+   "907MAL_s.rim"
+  ],
+  "950COR": [
+   "950COR.rim",
+   "950COR_dlg.erf",
+   "950COR_s.rim"
+  ]
+ }
+}

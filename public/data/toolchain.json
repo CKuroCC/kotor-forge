@@ -1,0 +1,22 @@
+[
+ {
+  "name": "pykotor",
+  "version": "2.3.12",
+  "why": "Core read/write library. Every KOTOR2 format, in-process, one language."
+ },
+ {
+  "name": "holopatcher",
+  "version": "1.5.3",
+  "why": "Headless TSLPatcher-mod installer. The only scriptable path for that mod class."
+ },
+ {
+  "name": "bioware-kaitai-formats",
+  "version": "0.1.0",
+  "why": "Machine-readable BioWare format specs (.ksy)."
+ },
+ {
+  "name": "mcp",
+  "version": "2.2.0",
+  "why": "Model Context Protocol SDK."
+ }
+]

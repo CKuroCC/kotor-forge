@@ -1,0 +1,170 @@
+[
+ {
+  "name": "forge_backup",
+  "sig": "(label: str = '') -> str",
+  "group": "lifecycle",
+  "summary": "Snapshot override/ (and the stock manifest) into a timestamped backup.",
+  "doc": "Snapshot override/ (and the stock manifest) into a timestamped backup.\n\nCheap and always safe. Taken automatically by forge_deploy, but run it by\nhand before installing any third-party mod."
+ },
+ {
+  "name": "forge_build",
+  "sig": "() -> str",
+  "group": "lifecycle",
+  "summary": "Report exactly what a deploy would write, with sizes and shas.",
+  "doc": "Report exactly what a deploy would write, with sizes and shas.\n\nThere is no packing step in KOTOR -- override/ takes loose files -- so\n'build' here means: freeze and describe the change set. Always run\nforge_verify after this and before deploying."
+ },
+ {
+  "name": "forge_deploy",
+  "sig": "(confirm: bool = False) -> str",
+  "group": "lifecycle",
+  "summary": "Copy everything in staging/ into the game's override/.",
+  "doc": "Copy everything in staging/ into the game's override/.\n\nTwo-phase: without confirm=True this only prints what it WOULD do.\nRefuses while swkotor2.exe is running -- the engine reads override/ at\nmodule load and a file swapped underneath it is a crash. Takes a backup\nautomatically before writing."
+ },
+ {
+  "name": "forge_revert",
+  "sig": "(to: str = '', confirm: bool = False) -> str",
+  "group": "lifecycle",
+  "summary": "Restore override/ from a backup. Blank `to` lists what is available.",
+  "doc": "Restore override/ from a backup. Blank `to` lists what is available.\n\nThis RESTORES THE WHOLE DIRECTORY: files added since the backup are\nremoved. Refuses while the game is running."
+ },
+ {
+  "name": "forge_scan",
+  "sig": "() -> str",
+  "group": "lifecycle",
+  "summary": "What in override/ is NOT stock -- i.e. what mods are actually live.",
+  "doc": "What in override/ is NOT stock -- i.e. what mods are actually live."
+ },
+ {
+  "name": "forge_selftest",
+  "sig": "() -> str",
+  "group": "lifecycle",
+  "summary": "Prove PyKotor round-trips this install's formats byte-identically.",
+  "doc": "Prove PyKotor round-trips this install's formats byte-identically.\n\nReads a real resource of each type out of the game, writes it back to\nbytes, and compares. A format that does NOT round-trip is a format this\nserver must not write -- the same proof gate er-forge uses before adding\nparam rows."
+ },
+ {
+  "name": "forge_snapshot",
+  "sig": "(confirm: bool = False) -> str",
+  "group": "lifecycle",
+  "summary": "Capture the CURRENT override/ as the stock baseline.",
+  "doc": "Capture the CURRENT override/ as the stock baseline.\n\nOnly ever run this on a clean, unmodded install -- everything present at\ncapture time becomes 'stock' forever, and forge_scan will stop reporting\nit as a mod. Refuses to overwrite an existing manifest without confirm."
+ },
+ {
+  "name": "forge_status",
+  "sig": "() -> str",
+  "group": "lifecycle",
+  "summary": "Where everything stands: install, override contents vs stock, staging,",
+  "doc": "Where everything stands: install, override contents vs stock, staging,\nbackups, and whether the game is running."
+ },
+ {
+  "name": "forge_verify",
+  "sig": "(expect_changed: str = '') -> str",
+  "group": "lifecycle",
+  "summary": "Prove the staged files are well-formed BEFORE they reach the game.",
+  "doc": "Prove the staged files are well-formed BEFORE they reach the game.\n\nEvery staged file is re-parsed from disk with PyKotor according to its\nextension. A file that cannot be re-read is a file that will crash the\nengine, and this is the only cheap place to catch it.\n\nexpect_changed: comma-separated filenames you intend to change. Supplying\nit turns the report into a PASS/FAIL verdict on the exact set."
+ },
+ {
+  "name": "forge_workspace",
+  "sig": "(reset: bool = False) -> str",
+  "group": "lifecycle",
+  "summary": "Prepare (or reset) the working tree: workspace/, staging/, oracle/.",
+  "doc": "Prepare (or reset) the working tree: workspace/, staging/, oracle/.\n\nstaging/ is where edited files accumulate. Nothing in it touches the game\nuntil forge_deploy(confirm=True). reset=True wipes staging -- use it to\nabandon a half-finished change set."
+ },
+ {
+  "name": "mod_install",
+  "sig": "(tslpatchdata: str, confirm: bool = False) -> str",
+  "group": "mods",
+  "summary": "Install a TSLPatcher mod headlessly via HoloPatcher.",
+  "doc": "Install a TSLPatcher mod headlessly via HoloPatcher.\n\nVortex flatly refuses this entire class of mod, and legacy TSLPatcher.exe\nis a GUI-only Delphi binary -- HoloPatcher's `--install --console` is the\nonly scriptable path. Takes a backup first, always."
+ },
+ {
+  "name": "mod_validate",
+  "sig": "(tslpatchdata: str) -> str",
+  "group": "mods",
+  "summary": "Lint a TSLPatcher/HoloPatcher mod's changes.ini WITHOUT installing it.",
+  "doc": "Lint a TSLPatcher/HoloPatcher mod's changes.ini WITHOUT installing it.\n\nPoint this at a downloaded mod's folder (the one containing\n`tslpatchdata`, or tslpatchdata itself). Tells you what the mod would do\nto your 2DAs, dialog.tlk and GFFs before it does it -- which matters\nbecause TSLPatcher mods edit shared tables in place and stack badly."
+ },
+ {
+  "name": "module_info",
+  "sig": "(module: str = '', limit: int = 60) -> str",
+  "group": "query",
+  "summary": "List the game's modules, or the resources inside one.",
+  "doc": "List the game's modules, or the resources inside one.\n\nBlank module = list all 246 module files with their area codes."
+ },
+ {
+  "name": "res_describe",
+  "sig": "(resref: str, rtype: str, order: str = 'all') -> str",
+  "group": "query",
+  "summary": "Summarise one resource: where it resolves from, and its contents.",
+  "doc": "Summarise one resource: where it resolves from, and its contents.\n\nUnderstands 2DA (shape + headers), TLK, GFF-family templates (fields),\nERF/RIM (contents), NCS (instruction count), TPC (dimensions)."
+ },
+ {
+  "name": "res_find",
+  "sig": "(query: str = '', restype_filter: str = '', location: str = 'all', limit: int = 60) -> str",
+  "group": "query",
+  "summary": "Find resources by ResRef substring.",
+  "doc": "Find resources by ResRef substring.\n\nquery:          substring, case-insensitive. Blank = sample everything.\nrestype_filter: comma-separated extensions, e.g. 'utc,uti' or '2da'.\nlocation:       all | override | modules | chitin | texturepacks |\n                music | sound | voice | lips"
+ },
+ {
+  "name": "script_compile",
+  "sig": "(source: str = '', source_file: str = '', out_name: str = '', confirm: bool = False) -> str",
+  "group": "edit",
+  "summary": "Compile NSS source to NCS bytecode, in-process, and stage it.",
+  "doc": "Compile NSS source to NCS bytecode, in-process, and stage it.\n\nUses PyKotor's native compiler targeting K2. We deliberately never shell\nout to nwnnsscomp: six mutually-incompatible builds of it exist and they\ndisagree on CLI syntax, which is why PyKotor identifies them by SHA-256.\n\nGive either `source` (inline NSS) or `source_file` (a path). out_name is\nthe ResRef, e.g. 'k_my_script' -> staging/k_my_script.ncs."
+ },
+ {
+  "name": "script_decompile",
+  "sig": "(resref: str, order: str = 'all') -> str",
+  "group": "query",
+  "summary": "Disassemble a compiled NCS script from the game back to readable form.",
+  "doc": "Disassemble a compiled NCS script from the game back to readable form."
+ },
+ {
+  "name": "stage_add",
+  "sig": "(path: str, as_name: str = '') -> str",
+  "group": "edit",
+  "summary": "Copy an arbitrary file into staging/ so it can be deployed to override/.",
+  "doc": "Copy an arbitrary file into staging/ so it can be deployed to override/.\n\nFor loose-file mods: textures (.tga/.tpc/.txi), models (.mdl/.mdx),\ntemplates, anything override/ accepts."
+ },
+ {
+  "name": "stage_clear",
+  "sig": "(confirm: bool = False) -> str",
+  "group": "edit",
+  "summary": "Empty staging/, abandoning the current change set.",
+  "doc": "Empty staging/, abandoning the current change set."
+ },
+ {
+  "name": "tlk_find",
+  "sig": "(text: str = '', strref: int = -1, limit: int = 25) -> str",
+  "group": "query",
+  "summary": "Search dialog.tlk. Give `text` to search, or `strref` for one entry.",
+  "doc": "Search dialog.tlk. Give `text` to search, or `strref` for one entry."
+ },
+ {
+  "name": "toolchain",
+  "sig": "() -> str",
+  "group": "query",
+  "summary": "What modding tools are installed, their versions, and what each is for.",
+  "doc": "What modding tools are installed, their versions, and what each is for."
+ },
+ {
+  "name": "twoda_add_row",
+  "sig": "(table: str, values: str, label: str = '', confirm: bool = False) -> str",
+  "group": "edit",
+  "summary": "Append a row to a 2DA and stage it.",
+  "doc": "Append a row to a 2DA and stage it.\n\nvalues: 'column=value,column=value,...' -- unlisted columns are blank.\nRow-adding is the operation most likely to break a 2DA, so the table is\nproved to round-trip byte-identically BEFORE any row is added; if it does\nnot, this refuses rather than risking the table."
+ },
+ {
+  "name": "twoda_edit",
+  "sig": "(table: str, row: int, column: str, value: str, confirm: bool = False) -> str",
+  "group": "edit",
+  "summary": "Change one cell in a 2DA and stage the result.",
+  "doc": "Change one cell in a 2DA and stage the result.\n\nReads the CURRENT effective table (override first, then chitin), edits it,\nre-parses what it wrote, and drops it in staging/. The game is untouched\nuntil forge_deploy. Without confirm=True it reports the before/after only."
+ },
+ {
+  "name": "twoda_query",
+  "sig": "(table: str, columns: str = '', where: str = '', limit: int = 30) -> str",
+  "group": "query",
+  "summary": "Read rows from a 2DA.",
+  "doc": "Read rows from a 2DA.\n\ntable:   e.g. 'appearance', 'baseitems', 'feat', 'spells', 'itempropdef'\ncolumns: comma-separated column names. Blank = first 6 columns.\nwhere:   'column=substring' filter, case-insensitive. Blank = from the top."
+ }
+]

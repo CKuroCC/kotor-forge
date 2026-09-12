@@ -1,0 +1,62 @@
+[
+ {
+  "kind": "fact",
+  "title": "PyKotor writes ANSI debug output to stdout, which destroys an MCP session",
+  "body": "On first import and on every Installation build, PyKotor logs through the root logger with ANSI colour codes. Under MCP, stdout <em>is</em> the JSON-RPC transport, so a single stray byte makes the client fail to parse and the server dies in a way the user never sees. Measured directly on 2026-09-12 while smoke-testing the library. Contained in <code>kio.py</code>: every PyKotor call runs inside a <code>quiet()</code> context that redirects stdout to a buffer and pins the root logger to CRITICAL. Verified afterwards with a real JSON-RPC handshake launched from <code>C:\\WINDOWS\\system32</code> with no environment, exactly as Claude Desktop launches it.",
+  "evidence": "DEBUG(root): Loading BIFs from chitin.key at 'D:\\SteamLibrary\\...'\n-> after containment:\nINIT OK  server: {'name': 'kotor-forge', 'version': ''}\nTOOLS: 24 registered\nSTDIO HANDSHAKE CLEAN -- no transport corruption"
+ },
+ {
+  "kind": "fact",
+  "title": "PyKotor creates a logs/ directory in the process working directory at import",
+  "body": "Claude Desktop launches MCP servers with the working directory set to <code>C:\\WINDOWS\\system32</code>, where creating a directory raises WinError 5 -- and PyKotor prints that failure to stdout, triggering the transport hazard above a second time. <code>kio.py</code> chdirs into the forge's own logs directory before the first PyKotor import.",
+  "evidence": "Failed to init 'logs' dir in cwd 'C:\\WINDOWS\\system32': [WinError 5] Access is denied: 'logs'"
+ },
+ {
+  "kind": "fact",
+  "title": "MCP SDK 2.x renamed FastMCP to MCPServer",
+  "body": "The sibling servers <code>er-forge</code> and <code>ac6-forge</code> are pinned to mcp 1.29.1 and import <code>mcp.server.fastmcp.FastMCP</code>. On mcp 2.2.0 that import raises, with a message pointing at <code>mcp.server.mcpserver.MCPServer</code>. The <code>.tool()</code> decorator and <code>.run()</code> signatures were checked and are drop-in identical, so KOTOR Forge imports either. The two older servers will break the day their venvs are upgraded -- worth knowing before it happens rather than after.",
+  "evidence": "ModuleNotFoundError: No module named 'mcp.server.fastmcp'. This is mcp 2.x,\nwhere FastMCP was renamed to MCPServer"
+ },
+ {
+  "kind": "fact",
+  "title": "PyKotor round-trips this install's core formats byte-identically",
+  "body": "Read-write-compare was run against live resources pulled out of the game, not against synthetic fixtures. Seven probes covering 2DA, three GFF template types and SSF all returned byte-identical output. The in-process NSS compiler produced valid NCS from source. dialog.tlk parsed at 136,329 entries. This is the gate that licenses the write tools: a format that does not round-trip is a format the server refuses to write.",
+  "evidence": "2da    appearance       ok  671 rows x 94 cols, byte-identical (148884 B)\n2da    baseitems        ok  104 rows x 61 cols, byte-identical (17948 B)\n2da    feat             ok  245 rows x 91 cols, byte-identical (63055 B)\nutc    p_atton          ok  GFF, byte-identical (3491 B)\nuti    g_w_crslash001   ok  GFF, byte-identical (929 B)\nutp    g_tresmilhig006  ok  GFF, byte-identical (2251 B)\nssf    p_atton          ok  soundset, byte-identical (172 B)\n\nVERDICT: PROVEN -- read/write is byte-safe for 7 probes"
+ },
+ {
+  "kind": "fact",
+  "title": "The full staging to deploy to revert chain was proven against the live game",
+  "body": "Not a dry run. A real 2DA edit and a real compiled script were staged, built, verified, deployed into the game's override/, confirmed present by a scan, then reverted from the automatic pre-deploy backup. The install came back byte-identical to the stock baseline. Run 2026-09-12.",
+  "evidence": "6  DEPLOYED 3 files to ...\\override\n7  ADDED BY MODS (3)  feat.2da  kf_e2e.ncs  kf_e2e.nss\n10 reverted override/ to 20260912-133552-predeploy -- 60 files restored\n11 override/ is byte-identical to the stock baseline -- vanilla."
+ },
+ {
+  "kind": "fact",
+  "title": "kotordiff is not on PyPI, and a batch pip install hides that",
+  "body": "PyKotor's documentation lists KotorDiff among its tool packages, but <code>pip install kotordiff</code> resolves to nothing. Worse, naming it alongside holopatcher in one pip command aborted the whole transaction, so holopatcher silently did not install either and the toolchain report showed it missing. Install unproven packages one at a time.",
+  "evidence": "ERROR: Could not find a version that satisfies the requirement kotordiff\n(from versions: none)"
+ },
+ {
+  "kind": "fact",
+  "title": "This KOTOR II install is the Aspyr Steam build, and it is vanilla",
+  "body": "The 60 files sitting in override/ are stock: Aspyr's gamepad and PS3/Xbox button textures. They are not a mod, and a stock-baseline manifest was captured before anything was installed so that drift stays visible from here on. Steam app 208580; the Aspyr modernisation landed on Steam in July 2015, not 2022 -- the 2022 date belongs to the GOG rollout.",
+  "evidence": "modules=246  chitin resources=18439  texturepacks=4\nOVERRIDE  60 files, 96.7 MB\nstock baseline captured 2026-09-12T13:34:45\noverride/ is byte-identical to the stock baseline -- vanilla."
+ },
+ {
+  "kind": "inference",
+  "title": "Build on PyKotor in-process, not on a pile of external executables",
+  "body": "PyKotor is the only thing in the KOTOR ecosystem that reads <em>and</em> writes every format the game ships, from one language, one process. Every alternative is either read-only for some formats (xoreos-tools has no model or walkmesh support), GUI-only (KOTOR Tool, MDLedit), or requires another runtime (MDLOps needs Perl, KotorBlender needs Blender). Shelling out buys nothing and costs typed objects and structured errors. It is LGPL, so linking is fine.",
+  "evidence": null
+ },
+ {
+  "kind": "inference",
+  "title": "The Aspyr lightsaber-hilt breakage is a renderer bug, not a format change",
+  "body": "The Aspyr build breaks lightsaber hilt texture mods and removed some fog effects. The community fix works by moving the hilt mesh into a separate model referenced by the blade model, which points at an extra shader applied at render time rather than at anything different in the MDL on disk. File-level tooling is therefore unaffected -- but any hilt mod is a known-suspect install, and Workshop-installed mods should stay out of a manual mod build entirely.",
+  "evidence": null
+ },
+ {
+  "kind": "inference",
+  "title": "Treat every KOTOR path as case-insensitive",
+  "body": "The Aspyr builds disagree with themselves about TexturePacks versus texturepack, and Vortex's own extension lists the lowercase singular. PyKotor ships a CaseAwarePath type and HoloPatcher advertises case-insensitive path handling as a headline feature -- both are responses to the same mess. Assume nothing about casing anywhere in this game's directory tree.",
+  "evidence": null
+ }
+]
