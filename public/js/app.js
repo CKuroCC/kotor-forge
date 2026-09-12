@@ -557,6 +557,21 @@ RENDER.build = async root => {
     root.appendChild(ul2);
   }
 
+  /* --- the sabers ------------------------------------------------------- */
+  const sb = b.sabers;
+  if (sb) {
+    root.appendChild(el('h2', 'sec', esc(sb.name)));
+    const c = el('div', 'card');
+    c.appendChild(el('p', 'muted', esc(sb.finding)));
+    root.appendChild(c);
+    const c2 = el('div', 'card');
+    c2.style.marginTop = '10px';
+    c2.appendChild(el('h3', null, 'The check that was wrong'));
+    c2.appendChild(el('p', 'muted', esc(sb.heuristic_note)));
+    root.appendChild(c2);
+    root.appendChild(el('div', 'warn', esc(sb.downstream)));
+  }
+
   /* --- the order ------------------------------------------------------- */
   root.appendChild(el('h2', 'sec', 'The order'));
   const t2 = el('table');
