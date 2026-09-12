@@ -557,6 +557,22 @@ RENDER.build = async root => {
     root.appendChild(ul2);
   }
 
+  /* --- the verifier ----------------------------------------------------- */
+  const vf = b.verifier;
+  if (vf) {
+    root.appendChild(el('h2', 'sec', esc(vf.name)));
+    [['What went wrong', vf.finding], ['The fix', vf.fix],
+     ['Models, and two corrections', vf.models],
+     ['A second, independent proof', vf.bonus]].forEach(([h, p]) => {
+      if (!p) return;
+      const c = el('div', 'card');
+      c.style.marginBottom = '10px';
+      c.appendChild(el('h3', null, esc(h)));
+      c.appendChild(el('p', 'muted', esc(p)));
+      root.appendChild(c);
+    });
+  }
+
   /* --- the sabers ------------------------------------------------------- */
   const sb = b.sabers;
   if (sb) {

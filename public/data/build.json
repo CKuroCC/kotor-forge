@@ -1,5 +1,12 @@
 {
- "updated": "2026-09-12T19:35:00",
+ "updated": "2026-09-12T19:55:00",
+ "verifier": {
+  "name": "Step 9 -- the verifier had to be fixed before 7 GB could go through it",
+  "finding": "forge_verify re-parsed every staged file with PyKotor, and for a texture that meant read_tpc decoding every mipmap into memory. Fine on a handful of files. On step 9's 1,033 textures totalling 7.1 GB it walked the worker from 366 MB to 3.1 GB of working set, climbing about 550 MB a minute with no plateau and roughly 60 percent of the batch still to go. The run was killed rather than gambled on -- nothing had been deployed, staging was intact, and stopping cost only a re-run.",
+  "fix": "Decoding pixels was never the point. The question a verify gate answers is whether the engine will choke on a file, and for a texture the 128-byte header settles it: plausible dimensions, a known encoding byte, and enough bytes present for the first mipmap. O(1) memory. 969 textures now check in 0.2 seconds against 10-plus minutes unfinished, and it still refuses a file truncated to a third, a 60-byte stub, and a corrupted encoding byte -- each with a diagnostic naming what is wrong.",
+  "models": "MDL and MDX had been passing through unchecked, so they got a header check too, and it took two corrections to get right. The first read rawDataSize as part of the MDL and declared every healthy model in the game corrupt -- it is actually the size of the PAIRED .mdx. The second called an oversized .mdx corruption, until stock dor_mal02 turned out to declare 12,888 bytes against an .mdx holding 12,896: BioWare ships 8 bytes of padding, and the game has always loaded it. So the pair check is asymmetric now -- a short .mdx is fatal, a long one is padding. Vanilla is the oracle.",
+  "bonus": "The model check then confirmed the saber finding a second and independent way. w_lghtsbr_001.mdl declares a zero-length vertex buffer and its .mdx is zero bytes: 'paired .mdx empty as declared'. The first proof came from matching node-name strings; this one comes from the model's own header. All 362 models in override/ pass."
+ },
  "sabers": {
   "name": "Step 7 -- 31 zero-byte model files, and why they are correct",
   "finding": "Lightsaber Hilt Variety ships 62 .mdx vertex-buffer files and 31 of them are ZERO BYTES -- in the author's original zip, not as an extraction artifact, and the zip passes its CRC. Worse, the game's own copies of those same ResRefs carry 10,848 bytes each. Read naively that is a mod blanking every lightsaber in the game, and the first automated verdict said exactly that: DO NOT DEPLOY. It was wrong, and the reason is worth keeping. The 31 empty ones are all named w_dblsbr_NNN / w_lghtsbr_NNN / w_shortsbr_NNN -- weapon models. Alongside them ship 31 NEW models named dblsbr_blue, lghtsbr_gold, shortsbr_turq and so on, each carrying 10,688 bytes of real geometry. Opening w_dblsbr_001.mdl shows it grew from 57,392 to 80,650 bytes and gained three node names absent from stock: ref_hilt, dummy_blade, and dblsbr_blue. The weapon model was rewritten into a rig that REFERENCES a separate model holding the mesh. The vertex data moved; it was not deleted. That is the documented Aspyr hilt fix, and the empty .mdx is correct by construction.",
@@ -79,8 +86,8 @@
    "note": "125 files. 31 of its .mdx are ZERO BYTES -- proven to be the Aspyr hilt fix, not damage. See the saber section"},
   {"n": 8,  "name": "HQ Skyboxes II", "kind": "tslpatcher", "state": "done",
    "note": "270 patches, 0 errors, 3 seconds. GFF-only, 12 .are files, no 2DA to collide with"},
-  {"n": 9,  "name": "Ultimate HR pack + 6 environment packs", "kind": "loose", "state": "ready",
-   "note": "each nests its files in an override/ subfolder. MUST exclude w_Lghtsbr_001.tpc -- it would override step 7's hilt fix"},
+  {"n": 9,  "name": "Ultimate HR pack + 6 environment packs", "kind": "loose", "state": "done",
+   "note": "1,033 files / 7.1 GB. Two files held back: w_Lghtsbr_001.tpc and DAN_MWFl.tpc. Zero clashes between the seven packs"},
   {"n": 10, "name": "UCO REDUX LITE", "kind": "loose", "state": "ready", "note": "975 .tpc at folder root"},
   {"n": 11, "name": "UCO compatibility patches x3", "kind": "loose", "state": "ready", "note": "TSLRCM, K2CP, Underwear"},
   {"n": 12, "name": "HD Cockpit Skyboxes", "kind": "loose", "state": "ready", "note": "9 files"},
