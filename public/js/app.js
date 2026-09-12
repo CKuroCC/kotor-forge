@@ -358,9 +358,9 @@ RENDER.library = async root => {
   const g = el('div', 'grid');
   g.style.gridTemplateColumns = 'repeat(auto-fill,minmax(210px,1fr))';
   [
-    [num(lib.total_files),            'archives staged'],
+    [num(lib.total_files),            'files staged'],
     [bytes(lib.total_bytes),          'on disk'],
-    [num(lib.verified_ok),            'CRC verified'],
+    [num(lib.verified_ok),            'archives CRC verified'],
     [num(lib.verified_fail),          'failed'],
   ].forEach(([v, l]) => {
     const c = el('div', 'card');
