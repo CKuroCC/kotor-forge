@@ -42,6 +42,36 @@
   "evidence": "modules=246  chitin resources=18439  texturepacks=4\nOVERRIDE  60 files, 96.7 MB\nstock baseline captured 2026-09-12T13:34:45\noverride/ is byte-identical to the stock baseline -- vanilla."
  },
  {
+  "kind": "fact",
+  "title": "PyKotor 2.3.12 cannot read a [CompileList] at all -- and that breaks HoloPatcher too",
+  "body": "The most consequential bug found. <code>ModificationsNSS.__init__(self, filename, *, replace=None, ...)</code> makes <code>replace</code> keyword-only, but PyKotor's own <code>ConfigReader</code> passes it positionally. Somebody added the <code>*,</code> to the subclass and missed the one caller; the base class still takes it positionally. <code>[CompileList]</code> compiles NSS scripts and a large share of real TSLPatcher mods have one, so <em>every such mod fails to install</em> -- not just through this server, but through HoloPatcher itself. Contained by <code>nssfix.py</code>, a runtime shim that lives in our code rather than site-packages, so a pip upgrade cannot silently revert it, and that becomes a no-op once upstream fixes the signature. Because <code>holopatcher.exe</code> is a separate process that would load PyKotor unpatched, installs run through our own launcher instead.",
+  "evidence": "holopatcher --install --console  ->  rc=7\nTypeError: ModificationsNSS.__init__() takes 2 positional\narguments but 3 were given\n\nafter nssfix:\nCompiling 'kf_verify.nss' and saving as 'kf_verify.ncs'\nnwnnsscomp.exe was not found, using the built-in compilers...\nThe installation is complete with 0 errors and 0 warnings."
+ },
+ {
+  "kind": "fact",
+  "title": "Installation caches the override file list, so reads go stale right after a mod install",
+  "body": "<code>Installation</code> snapshots <code>override/</code> when it is built, and it is cached for the life of the process. After a successful install put a patched <code>spells.2da</code> and <code>feat.2da</code> into <code>override/</code>, <code>twoda_query</code> still returned the stock row counts. The wrong read is the small half of this. The real danger is that <code>twoda_edit</code> would then load the <em>vanilla</em> table, edit that, and stage a file that silently erases whatever the other mod did -- exactly the failure this server exists to prevent. Contained twice over: the cache is dropped after every deploy, revert and mod install, and reads now check <code>override/</code> on disk case-insensitively before consulting the cache at all.",
+  "evidence": "after install, before the fix:\n  feat.2da -- 245 rows   (stock)\nafter the fix:\n  feat.2da -- 246 rows x 91 cols, 1 matched\n  245  KF_VERIFY_FEAT"
+ },
+ {
+  "kind": "fact",
+  "title": "override/ is not the whole attack surface -- dialog.tlk is patched in the game root",
+  "body": "TSLPatcher's <code>[TLKList]</code> appends to <code>dialog.tlk</code> in place, in the game root, not in <code>override/</code>. Backup originally copied only <code>override/</code>, so a mod install appended string-table entries that <em>no revert could undo</em>. Two test installs left dialog.tlk 120 bytes and 2 entries larger than stock with nothing in our own backups to restore from; it was recovered from HoloPatcher's own backup inside the mod folder, and a pristine copy is now archived. Backups now cover dialog.tlk, swkotor2.ini and swplayer.ini; revert restores them and says so, and warns loudly when the chosen backup predates the feature and therefore cannot undo a TLK patch.",
+  "evidence": "GAME-ROOT FILES  (patched in place by mods, outside override/)\n   dialog.tlk    9.7 MB  !! PATCHED (stock 9.7 MB, +120 bytes)\n\nafter the fix:\n   dialog.tlk    9.7 MB  stock\n   swkotor2.ini  1.5 KB  stock\n   swplayer.ini   677 B  stock"
+ },
+ {
+  "kind": "fact",
+  "title": "A real TSLPatcher mod installs, takes effect, and reverts cleanly",
+  "body": "A valid mod was constructed -- real 2DAs pulled out of the game, a real append.tlk, an NSS script, a file to copy -- exercising [TLKList], [2DAList], [CompileList] and [InstallList]. It installed with 5 patches and 0 errors, and the edits were then read back <em>through the engine's own resolution order</em> rather than merely confirmed to exist as files. Reverting restored the install byte-for-byte: 60 override files all matching their recorded hashes, dialog.tlk back to 136,329 entries, feat.2da back to 245 rows.",
+  "evidence": "INSTALL OK -- Successfully completed 5 total patches.\n\nspells.2da row 8   label = KF_VERIFY_SPEED\nfeat.2da   246 rows, row 245 = KF_VERIFY_FEAT\n\nafter revert:\noverride/ is byte-identical to the stock baseline -- vanilla.\nno rows matched 'label=KF_VERIFY' in feat.2da (245 rows total)"
+ },
+ {
+  "kind": "fact",
+  "title": "Tool output must be pure ASCII, because drive.py prints to a cp1252 console",
+  "body": "A single U+26A0 warning sign in a tool's output raised <code>UnicodeEncodeError: 'charmap' codec can't encode character</code> and killed a verification run mid-flight. MCP itself is UTF-8 JSON and would have been fine, but the non-MCP CLI prints straight to a Windows console. Every source file is now pure ASCII and asserted so. er-forge is pure ASCII for the same reason.",
+  "evidence": "File \"...\\encodings\\cp1252.py\", line 19, in encode\nUnicodeEncodeError: 'charmap' codec can't encode character\n'\\u26a0' in position 491"
+ },
+ {
   "kind": "inference",
   "title": "Build on PyKotor in-process, not on a pile of external executables",
   "body": "PyKotor is the only thing in the KOTOR ecosystem that reads <em>and</em> writes every format the game ships, from one language, one process. Every alternative is either read-only for some formats (xoreos-tools has no model or walkmesh support), GUI-only (KOTOR Tool, MDLedit), or requires another runtime (MDLOps needs Perl, KotorBlender needs Blender). Shelling out buys nothing and costs typed objects and structured errors. It is LGPL, so linking is fine.",

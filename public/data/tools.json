@@ -3,8 +3,8 @@
   "name": "forge_backup",
   "sig": "(label: str = '') -> str",
   "group": "lifecycle",
-  "summary": "Snapshot override/ (and the stock manifest) into a timestamped backup.",
-  "doc": "Snapshot override/ (and the stock manifest) into a timestamped backup.\n\nCheap and always safe. Taken automatically by forge_deploy, but run it by\nhand before installing any third-party mod."
+  "summary": "Snapshot override/ AND the patchable game-root files into a backup.",
+  "doc": "Snapshot override/ AND the patchable game-root files into a backup.\n\nCheap and always safe. Taken automatically by forge_deploy and mod_install,\nbut run it by hand before installing any third-party mod.\n\n!! override/ is NOT the whole attack surface. TSLPatcher mods patch\n`dialog.tlk` IN PLACE IN THE GAME ROOT, and early versions of this tool\nbacked up only override/ -- so a mod install appended TLK entries that no\nrevert could undo. Measured 2026-09-12: two installs left dialog.tlk 120\nbytes and 2 entries larger than stock with nothing in our backups to\nrestore from. C.ROOT_FILES is the list that fixes that."
  },
  {
   "name": "forge_build",
@@ -80,8 +80,8 @@
   "name": "mod_validate",
   "sig": "(tslpatchdata: str) -> str",
   "group": "mods",
-  "summary": "Lint a TSLPatcher/HoloPatcher mod's changes.ini WITHOUT installing it.",
-  "doc": "Lint a TSLPatcher/HoloPatcher mod's changes.ini WITHOUT installing it.\n\nPoint this at a downloaded mod's folder (the one containing\n`tslpatchdata`, or tslpatchdata itself). Tells you what the mod would do\nto your 2DAs, dialog.tlk and GFFs before it does it -- which matters\nbecause TSLPatcher mods edit shared tables in place and stack badly."
+  "summary": "Lint a TSLPatcher/HoloPatcher mod WITHOUT installing it.",
+  "doc": "Lint a TSLPatcher/HoloPatcher mod WITHOUT installing it.\n\nPoint this at a downloaded mod's folder (the one containing\n`tslpatchdata`, or tslpatchdata itself). It answers the question that\nactually matters before you install anything: WHICH SHARED FILES DOES THIS\nEDIT IN PLACE -- because TSLPatcher mods patch 2DAs, dialog.tlk and GFFs\nin place, so two mods touching the same table stack badly and install\norder decides the outcome.\n\nThe report is built from the raw changes.ini, which always works, and is\nenriched with PyKotor's structured parse when that succeeds. It does not\nalways succeed: `[CompileList]` hits an upstream bug in PyKotor 2.3.12\n(ModificationsNSS.__init__ takes 2 positional args, the reader passes 3),\nand script compiles are common. That is why the ini scan is primary."
  },
  {
   "name": "module_info",
