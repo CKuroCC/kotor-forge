@@ -108,6 +108,30 @@
   "evidence": "pfbas  pfbam  pfbal      <- underwear  S / M / L\npfbbs  pfbbm  pfbbl      <- clothes\npfbcs..pfbjs  pfbcm..pfbjm  pfbcl..pfbjl   <- armour + robes\nappearance.2da: 671 rows x 94 columns, every row points at *M"
  },
  {
+  "kind": "fact",
+  "title": "Two large Deadly Stream downloads fired together, and one silently died at 8 KB",
+  "body": "The cutscene pack ships eight variants behind one modal. Clicking the 22.22 GB archive and the 2.31 GB companion back to back looked fine in the browser: no error, no warning text on the page, both rows acknowledged. On disk the small one completed and the large one sat at <strong>8,192 bytes</strong> and never moved. Nothing in the DOM said so -- only a filesystem check did. Retried alone, the same archive pulled at a sustained 37.5 MB/s and finished in about ten minutes. The rule that came out of it: pull large archives one at a time, and confirm the <code>.crdownload</code> is actually <em>growing</em> before moving on to the next thing.",
+  "evidence": "16:26:04         8,192 B  k2rs_30fps_3440x1440.7z.crdownload   <- stalled, no error\n16:27:42 2,485,690,833 B  k2rs_30fps_mods_3440x1440.7z         <- completed\n\nafter retrying alone:\nnow 13.55 GB   rate 37.0 MB/s"
+ },
+ {
+  "kind": "fact",
+  "title": "Steam Cloud is SHA-tracking the savegames, which puts it in direct conflict with the save editor",
+  "body": "The save tools patch <code>partytable.res</code> surgically -- a credits change touches exactly three bytes and every other file in the save is left byte-identical. That precision is worth nothing if something else rewrites the save afterwards, so the Steam side was checked rather than assumed. <code>remotecache.vdf</code> records a SHA-1 per file for every save, and the saves themselves live in the game folder's <code>cloudsaves\\</code> directory. A patched file no longer matches its recorded SHA, so Steam can offer to restore its own copy and quietly undo the edit. The last recorded sync was 2025-02-05, so the cloud copy is already months stale -- restoring it would cost real progress. Steam Cloud has to be off for appid 208580 before any save editing.",
+  "evidence": "C:\\Program Files (x86)\\Steam\\userdata\\138831487\\208580\\remotecache.vdf  (2,962 B)\n  \"cloudsaves/138831487/000001 - AUTOSAVE/SAVEGAME.sav\"\n    size 62493  sha c06277e08c7c8657104ccb93042cb38a1642fe95  syncstate 1\n  + GLOBALVARS.res, PARTYTABLE.res, pifo.ifo, savenfo.res -- each SHA-tracked\n  remotetime 1738732687 = 2025-02-05"
+ },
+ {
+  "kind": "fact",
+  "title": "Every staged archive was CRC-tested, not size-checked",
+  "body": "43 archives, 5.77 GB, pulled from two hosts over a couple of hours. A truncated CDN transfer is indistinguishable from a complete one by size alone, and the place it surfaces is halfway through a TSLPatcher run -- after the patcher has already written to shared 2DAs and <code>dialog.tlk</code>. So each archive was opened and CRC-tested with <code>7z t</code>, exit code checked per file. 7-Zip itself was not installed on this machine; the first verification pass returned <code>7ZIP-MISSING</code> and had to install it before it could prove anything.",
+  "evidence": "7z: C:\\Program Files\\7-Zip\\7z.exe   (26.03 x64, installed via winget this session)\n...\nOK       504.8 MB  Ultimate Character Overhaul -REDUX- ( LITE ) - TPC Version\nOK     1,326.6 MB  Ultimate High Resolution Texture Pack - TPC Version\nOK        76.8 MB  K2CP_v1.6.3.zip\n\narchives OK=43  FAIL=0"
+ },
+ {
+  "kind": "inference",
+  "title": "The blocked TSLRCM download stays blocked until a human clicks Keep",
+  "body": "TSLRCM ships as a <code>.exe</code> self-extracting installer, and Chrome Safe Browsing quarantines uncommon executables by default. Both copies are already <em>completely downloaded</em> -- 137,947,655 bytes each, the full 131.56 MB -- and held as <code>Unconfirmed *.crdownload</code>. Dismissing a browser security prompt is a user-only action by design, so it was left alone. A Deadly Stream review comment links a Google Drive folder of <code>.zip</code> archives, posted by PyKotor's own author claiming the original author's permission, and it was still rejected: it is a third-party re-host of the single most load-bearing mod in the build, and a silent difference there would not surface as an error, it would surface as an unexplainable broken install several hours later.",
+  "evidence": null
+ },
+ {
   "kind": "inference",
   "title": "Build on PyKotor in-process, not on a pile of external executables",
   "body": "PyKotor is the only thing in the KOTOR ecosystem that reads <em>and</em> writes every format the game ships, from one language, one process. Every alternative is either read-only for some formats (xoreos-tools has no model or walkmesh support), GUI-only (KOTOR Tool, MDLedit), or requires another runtime (MDLOps needs Perl, KotorBlender needs Blender). Shelling out buys nothing and costs typed objects and structured errors. It is LGPL, so linking is fine.",

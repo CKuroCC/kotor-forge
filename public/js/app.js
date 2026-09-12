@@ -31,6 +31,7 @@ const TABS = [
   ['tools',     'MCP Tools'],
   ['formats',   'Format Map'],
   ['install',   'Install State'],
+  ['library',   'Mod Library'],
   ['decisions', 'Decisions'],
 ];
 
@@ -340,6 +341,107 @@ RENDER.install = async root => {
   Object.keys(ins.areas || {}).forEach(k =>
     host.appendChild(el('span', 'tag', esc(k))));
   root.appendChild(host);
+};
+
+/* ------------------------------------------------------------- MOD LIBRARY */
+RENDER.library = async root => {
+  if (root.dataset.done) return; root.dataset.done = 1;
+  const lib = await get('library');
+  if (!lib) { root.appendChild(el('div', 'empty', 'library data missing')); return; }
+
+  root.appendChild(el('p', 'lede',
+    'Every mod archive staged on disk, grouped in install order. Nothing here ' +
+    'is listed on the strength of its filename: each archive is CRC-tested with ' +
+    '7-Zip before it counts as present, because a truncated CDN transfer looks ' +
+    'exactly like a complete one until the day you try to extract it.'));
+
+  const g = el('div', 'grid');
+  g.style.gridTemplateColumns = 'repeat(auto-fill,minmax(210px,1fr))';
+  [
+    [num(lib.total_files),            'archives staged'],
+    [bytes(lib.total_bytes),          'on disk'],
+    [num(lib.verified_ok),            'CRC verified'],
+    [num(lib.verified_fail),          'failed'],
+  ].forEach(([v, l]) => {
+    const c = el('div', 'card');
+    c.appendChild(el('div', 'stat', esc(v) + '<small>' + esc(l) + '</small>'));
+    g.appendChild(c);
+  });
+  root.appendChild(g);
+
+  if (lib.verified_fail) {
+    root.appendChild(el('div', 'warn',
+      num(lib.verified_fail) + ' archive(s) failed their CRC test. Re-download ' +
+      'before installing anything &mdash; a bad archive fails halfway through a ' +
+      'patcher run, which is the worst possible place for it.'));
+  }
+
+  const blocked = (lib.blockers || []).filter(b => b.state === 'blocked');
+  if (blocked.length) {
+    root.appendChild(el('h2', 'sec', 'Blocked on a human'));
+    blocked.forEach(b => {
+      const c = el('div', 'card');
+      c.style.marginBottom = '10px';
+      c.style.borderColor = '#512f2f';
+      c.appendChild(el('h3', null, esc(b.title)));
+      c.appendChild(el('p', 'muted', esc(b.body)));
+      root.appendChild(c);
+    });
+  }
+
+  root.appendChild(el('h2', 'sec', 'Staged, in install order'));
+  (lib.groups || []).forEach(grp => {
+    const d = el('details');
+    const n = (grp.files || []).length;
+    const failed = (grp.files || []).filter(f => f.verify === 'fail').length;
+    d.appendChild(el('summary', null,
+      '<span class="pill ' + (grp.tier === 'install-first' ? 'lifecycle' : 'mods') +
+      '">' + esc(grp.key) + '</span> ' +
+      '<strong style="color:var(--amber2)">' + esc(grp.label) + '</strong>' +
+      '<span class="faint"> &nbsp;' + n + ' file' + (n === 1 ? '' : 's') +
+      ' &middot; ' + bytes(grp.bytes) +
+      (failed ? ' &middot; ' + failed + ' FAILED' : '') + '</span>'));
+    d.appendChild(el('p', 'muted', esc(grp.note)));
+    if (!n) {
+      d.appendChild(el('div', 'empty', 'nothing staged here yet'));
+    } else {
+      const t = el('table');
+      t.innerHTML = '<thead><tr><th>Archive</th><th class="mono">Size</th>' +
+        '<th>CRC</th></tr></thead>';
+      const tb = el('tbody');
+      grp.files.forEach(f => {
+        const pill = { ok: 'on', fail: 'off', skipped: 'no' }[f.verify] || 'no';
+        const lbl = { ok: 'verified', fail: 'FAILED', skipped: 'not an archive' }[f.verify]
+          || f.verify;
+        const tr = el('tr');
+        tr.innerHTML = '<td class="mono">' + esc(f.name) + '</td>' +
+          '<td class="mono">' + esc(bytes(f.bytes)) + '</td>' +
+          '<td><span class="pill ' + pill + '">' + esc(lbl) + '</span></td>';
+        tb.appendChild(tr);
+      });
+      t.appendChild(tb);
+      const sc = el('div', 'scroll'); sc.appendChild(t); d.appendChild(sc);
+    }
+    root.appendChild(d);
+  });
+
+  const clear = (lib.blockers || []).filter(b => b.state === 'clear');
+  if (clear.length) {
+    root.appendChild(el('h2', 'sec', 'Checked, and clear'));
+    clear.forEach(b => {
+      const c = el('div', 'card');
+      c.style.marginBottom = '10px';
+      c.appendChild(el('h3', null, esc(b.title)));
+      c.appendChild(el('p', 'muted', esc(b.body)));
+      root.appendChild(c);
+    });
+  }
+
+  root.appendChild(el('div', 'note',
+    'Library root <code>' + esc(lib.root) + '</code> &middot; extractor ' +
+    esc(lib.extractor) + ' &middot; scanned ' +
+    esc(String(lib.generated || '').replace('T', ' ')) + '. Regenerate with ' +
+    '<code>py export_library.py</code>.'));
 };
 
 /* ---------------------------------------------------------------- DECISIONS */

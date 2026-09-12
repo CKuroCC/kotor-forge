@@ -7,7 +7,9 @@ no dependencies, no webfonts. Vercel serves `public/` with `@vercel/static`.
 ## Refresh the data
 
 ```
-"C:\Users\burori\mcp-servers\kotor-forge\.venv\Scripts\python.exe" export_live.py
+set PY="C:\Users\burori\mcp-servers\kotor-forge\.venv\Scripts\python.exe"
+%PY% export_live.py
+%PY% export_library.py
 git add -A && git commit -m "refresh data" && git push
 ```
 
@@ -21,6 +23,18 @@ disagree about what is installed, and writes:
 | `public/data/tools.json`     | the server's own tool signatures and docstrings, via `inspect` |
 | `public/data/toolchain.json` | installed package versions |
 | `public/data/meta.json`      | export timestamp (drives the header) |
+
+`export_library.py` is the second generator. It scans
+`D:\GameMods\KOTOR2\03_MOD-LIBRARY` and writes `public/data/library.json`.
+Every archive is **CRC-tested with 7-Zip** before it is reported as present —
+a size check proves nothing about a truncated CDN transfer, and that failure
+surfaces halfway through a TSLPatcher run, after the patcher has already
+written to shared 2DAs and `dialog.tlk`. Results are memoised in
+`verify-cache.json` (keyed by name + size, gitignored) so a re-export does not
+re-read 24 GB of cutscenes; `--recheck` drops the cache and tests everything.
+
+The group list, the per-group notes and the blockers are curated **inside**
+`export_library.py` — that is the one place to edit them.
 
 Three files are hand-maintained and not regenerated:
 `formats.json`, `ecosystem.json`, `decisions.json`.

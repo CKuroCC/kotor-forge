@@ -1,0 +1,345 @@
+{
+ "generated": "2026-09-12T16:43:59",
+ "root": "D:\\GameMods\\KOTOR2\\03_MOD-LIBRARY",
+ "total_files": 48,
+ "total_bytes": 32390526741,
+ "verified_ok": 45,
+ "verified_fail": 0,
+ "extractor": "7-Zip 26.03 x64",
+ "groups": [
+  {
+   "key": "00_engine-fixes",
+   "label": "Engine fixes",
+   "tier": "install-first",
+   "note": "3C-FD runs first and refuses a modified executable, so nothing may touch swkotor2.exe before it -- no 4GB patcher, no widescreen hex edit. Apply every patch except Borderless Window.",
+   "files": [
+    {
+     "name": "3C-FD-README.md",
+     "bytes": 2382,
+     "verify": "skipped"
+    },
+    {
+     "name": "3C-FD.Tool.v4.1.2.exe",
+     "bytes": 382976,
+     "verify": "skipped"
+    }
+   ],
+   "bytes": 385358
+  },
+  {
+   "key": "01_restoration",
+   "label": "Restoration",
+   "tier": "install-first",
+   "note": "TSLRCM then the Community Patch. Everything downstream assumes both are already in, and several compatibility patches exist only for this pair.",
+   "files": [
+    {
+     "name": "K2CP_v1.6.3.zip",
+     "bytes": 80523387,
+     "verify": "ok"
+    },
+    {
+     "name": "water_restoration_3.0.zip",
+     "bytes": 16732673,
+     "verify": "ok"
+    }
+   ],
+   "bytes": 97256060
+  },
+  {
+   "key": "02_lightsabers",
+   "label": "Lightsabers",
+   "tier": "safe",
+   "note": "JC's VFX before Hilt Variety. v2.0 of Hilt Variety already contains the Aspyr hilt fix, so the standalone Glitched Hilt Fix is not needed.",
+   "files": [
+    {
+     "name": "JC's Lightsaber Visual Effects for K2 v1.5.zip",
+     "bytes": 2275955,
+     "verify": "ok"
+    },
+    {
+     "name": "lightsaber_hilt variety_v2.0.zip",
+     "bytes": 1631370,
+     "verify": "ok"
+    }
+   ],
+   "bytes": 3907325
+  },
+  {
+   "key": "03_textures",
+   "label": "Textures & upscales",
+   "tier": "safe",
+   "note": "The bulk of the build. Every pack is .tpc at 2x. Each has its own list of files to delete before the rest is moved into override/.",
+   "files": [
+    {
+     "name": "forcecage_updated_1.1.0.zip",
+     "bytes": 4329216,
+     "verify": "ok"
+    },
+    {
+     "name": "hd_npc_portraits_tsl-1.1.7z",
+     "bytes": 7374347,
+     "verify": "ok"
+    },
+    {
+     "name": "hd_pc_portraits_tsl-1.1.7z",
+     "bytes": 22374875,
+     "verify": "ok"
+    },
+    {
+     "name": "HQSkyboxesII_TSL.7z",
+     "bytes": 98901138,
+     "verify": "ok"
+    },
+    {
+     "name": "KOTOR 2 Community Patch - Compatibility Patch-1060-3-0-1629717259.rar",
+     "bytes": 275630105,
+     "verify": "ok"
+    },
+    {
+     "name": "Player and Party Underwear - Compatibility Patch-1060-3-0-1629717383.rar",
+     "bytes": 133065048,
+     "verify": "ok"
+    },
+    {
+     "name": "plc_frcdist01.txi",
+     "bytes": 97,
+     "verify": "skipped"
+    },
+    {
+     "name": "Replacement Loading Screens for KotOR2 Original Pack Part 1.7z",
+     "bytes": 97972101,
+     "verify": "ok"
+    },
+    {
+     "name": "Replacement Loading Screens for KotOR2 Original Pack Part 3.7z",
+     "bytes": 37585784,
+     "verify": "ok"
+    },
+    {
+     "name": "Sith Holocron - Replacement Loading Screens for KotOR2 Original Pack, part 2.7z",
+     "bytes": 91847028,
+     "verify": "ok"
+    },
+    {
+     "name": "The Sith Lords Restored Content Mod - Compatibility Patch-1060-3-0-1629717420.rar",
+     "bytes": 79298469,
+     "verify": "ok"
+    },
+    {
+     "name": "TSL - AI Upscaled Icon Overhaul (All in One).7z",
+     "bytes": 47075958,
+     "verify": "ok"
+    },
+    {
+     "name": "TSL HD Cockpit Skyboxes - Medium Resolution TPC.zip",
+     "bytes": 6374762,
+     "verify": "ok"
+    },
+    {
+     "name": "Ultimate Character Overhaul -REDUX- ( LITE ) - TPC Version-1060-3-0-1628674441.rar",
+     "bytes": 529327004,
+     "verify": "ok"
+    },
+    {
+     "name": "Ultimate Dantooine High Resolution - TPC Version-1103-2-1-1670680013.rar",
+     "bytes": 750063088,
+     "verify": "ok"
+    },
+    {
+     "name": "Ultimate Dxun High Resolution - TPC Version-1105-1-1-1670681825.rar",
+     "bytes": 482504635,
+     "verify": "ok"
+    },
+    {
+     "name": "Ultimate High Resolution Texture Pack - TPC Version-1100-1-1-1670426755.rar",
+     "bytes": 1391063691,
+     "verify": "ok"
+    },
+    {
+     "name": "Ultimate Korriban High Resolution - TPC Version-1104-1-0-1607783470.rar",
+     "bytes": 109304258,
+     "verify": "ok"
+    },
+    {
+     "name": "Ultimate Malachor V High Resolution - TPC Version-1106-1-1-1670682360.rar",
+     "bytes": 202714575,
+     "verify": "ok"
+    },
+    {
+     "name": "Ultimate Nar Shaddaa High Resolution - TPC Version-1101-2-1-1670677562.rar",
+     "bytes": 807988379,
+     "verify": "ok"
+    },
+    {
+     "name": "Ultimate Onderon High Resolution - TPC Version-1102-1-1-1670678459.rar",
+     "bytes": 333596075,
+     "verify": "ok"
+    }
+   ],
+   "bytes": 5508390633
+  },
+  {
+   "key": "04_cutscenes",
+   "label": "Cutscenes",
+   "tier": "safe",
+   "note": "Pops Maellard's 3440x1440 set at 2.389:1 -- within 1% of this display. The matching _mods archive is required whenever TSLRCM is installed.",
+   "files": [
+    {
+     "name": "k2rs_30fps_3440x1440.7z",
+     "bytes": 23857758862,
+     "verify": "ok"
+    },
+    {
+     "name": "k2rs_30fps_mods_3440x1440.7z",
+     "bytes": 2485690833,
+     "verify": "ok"
+    }
+   ],
+   "bytes": 26343449695
+  },
+  {
+   "key": "05_appearance",
+   "label": "Appearance",
+   "tier": "safe",
+   "note": "Mesh and texture only, so zero achievement risk. New player-head mods are deliberately excluded: they append a name StrRef to dialog.tlk.",
+   "files": [
+    {
+     "name": "[TSL]_DP_Kreia_Visible_Body_Models.7z",
+     "bytes": 1133947,
+     "verify": "ok"
+    },
+    {
+     "name": "[TSL]_Kreia_Visible_Body_Models_Atris_Robe_Addon.7z",
+     "bytes": 474163,
+     "verify": "ok"
+    },
+    {
+     "name": "FS_Fit_Handmaiden.7z",
+     "bytes": 1030339,
+     "verify": "ok"
+    },
+    {
+     "name": "Kirin BVM-Replacers v1.1.zip",
+     "bytes": 89166077,
+     "verify": "ok"
+    },
+    {
+     "name": "TSL_Player_and_Party_Under_wear_v2_by_RedRob41.7z",
+     "bytes": 10367544,
+     "verify": "ok"
+    },
+    {
+     "name": "Upscale+ Character Fixes - TSL V0.52 (2x tpc).7z",
+     "bytes": 254086161,
+     "verify": "ok"
+    }
+   ],
+   "bytes": 356258231
+  },
+  {
+   "key": "06_ui-widescreen",
+   "label": "UI & widescreen",
+   "tier": "safe",
+   "note": "Matters more than usual at 3840x1600. The duplicate-TGA/TPC cleaner runs from the main game folder, never from override/.",
+   "files": [
+    {
+     "name": "[TSL]_Main_Menu_Widescreen_Fix_v1.2.7z",
+     "bytes": 2147838,
+     "verify": "ok"
+    },
+    {
+     "name": "[TSL]_Workbench_Upgrade_Screen_Camera_Tweak.7z",
+     "bytes": 2393,
+     "verify": "ok"
+    },
+    {
+     "name": "load_3440x1440.7z",
+     "bytes": 23806222,
+     "verify": "ok"
+    },
+    {
+     "name": "Mod files-1086-1-0-1590189064.7z",
+     "bytes": 44077260,
+     "verify": "ok"
+    },
+    {
+     "name": "Remove Duplicate TGA-TPC-1384-1-2-1616219479.zip",
+     "bytes": 800,
+     "verify": "ok"
+    },
+    {
+     "name": "TSL Bigger Dialog font 3.0.zip",
+     "bytes": 2504059,
+     "verify": "ok"
+    },
+    {
+     "name": "TSL subtitle word wrap beta 2.0.zip",
+     "bytes": 5380464,
+     "verify": "ok"
+    },
+    {
+     "name": "Updated_TSLRCM_Logo_v1.8.6.7z",
+     "bytes": 124981,
+     "verify": "ok"
+    },
+    {
+     "name": "Widescreen UI for Steam.7z",
+     "bytes": 30558,
+     "verify": "ok"
+    }
+   ],
+   "bytes": 78074575
+  },
+  {
+   "key": "07_lighting",
+   "label": "Lighting",
+   "tier": "safe",
+   "note": "Relighting TSL, per-area. Depends on 3C-FD having restored reflections.",
+   "files": [
+    {
+     "name": "relightingtsl_003EBOg_1.2.zip",
+     "bytes": 213247,
+     "verify": "ok"
+    },
+    {
+     "name": "relightingtsl_101PERt_2.1.zip",
+     "bytes": 1121230,
+     "verify": "ok"
+    },
+    {
+     "name": "relightingtsl_102PERfklnt_1.0.zip",
+     "bytes": 132181,
+     "verify": "ok"
+    },
+    {
+     "name": "relightingtsl_298TELk_1.0.zip",
+     "bytes": 1338206,
+     "verify": "ok"
+    }
+   ],
+   "bytes": 2804864
+  }
+ ],
+ "blockers": [
+  {
+   "state": "blocked",
+   "title": "TSLRCM is fully downloaded and held by Chrome",
+   "body": "Both copies sit in D:\\Downloads as Unconfirmed *.crdownload at exactly 137,947,655 bytes -- the complete 131.56 MB. TSLRCM ships as a .exe self-extracting installer and Chrome Safe Browsing quarantines uncommon executables by default. The bytes are already down; only the confirmation is missing. Ctrl+J, then Keep. Dismissing a browser security prompt is a user-only action by design, and the third-party Google Drive re-host linked in a forum review is not an acceptable substitute for the most load-bearing mod in the build."
+  },
+  {
+   "state": "blocked",
+   "title": "Steam Cloud is SHA-tracking the savegames",
+   "body": "remotecache.vdf under userdata\\138831487\\208580 records a SHA for every save file, and the saves themselves live in the game folder's cloudsaves\\ directory. A surgical 4-byte credits patch changes that SHA, so Steam can offer to restore its own copy and silently undo the edit. The last recorded sync was 2025-02-05, so the remote copy is already stale. Fix: Library, KOTOR II, Properties, General, uncheck Steam Cloud."
+  },
+  {
+   "state": "clear",
+   "title": "Steam Workshop is empty",
+   "body": "steamapps\\workshop\\content\\208580 does not exist under either Steam library root. There are zero Workshop subscriptions to conflict with a manual mod build, which is the single most common way these builds break."
+  },
+  {
+   "state": "clear",
+   "title": "Nexus kotor2/1398 is unobtainable, and not needed",
+   "body": "Nexus's own automated safety checks have quarantined the file, so no download button exists on the page at all -- checked while signed in with Premium. Dropped from the build. TSL still ships KOTOR 1's Large body meshes and simply never points at them, so a cloned appearance.2da row covers the same ground with zero new art."
+  }
+ ]
+}
