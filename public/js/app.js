@@ -181,7 +181,7 @@ RENDER.tools = async root => {
   const q = el('input'); q.type = 'search'; q.placeholder = 'filter tools\u2026';
   const sel = el('select');
   sel.innerHTML = '<option value="">all groups</option>' +
-    ['lifecycle', 'query', 'edit', 'mods']
+    ['lifecycle', 'query', 'edit', 'saves', 'mods']
       .map(g => '<option value="' + g + '">' + g + '</option>').join('');
   const cnt = el('span', 'count');
   bar.append(q, sel, cnt);

@@ -83,6 +83,8 @@ for n in sorted(dir(S)):
         group = "lifecycle"
     elif n.startswith("mod_"):
         group = "mods"
+    elif n.startswith("save_"):
+        group = "saves"
     elif n in ("twoda_edit", "twoda_add_row", "script_compile",
                "stage_add", "stage_clear"):
         group = "edit"
