@@ -72,6 +72,42 @@
   "evidence": "File \"...\\encodings\\cp1252.py\", line 19, in encode\nUnicodeEncodeError: 'charmap' codec can't encode character\n'\\u26a0' in position 491"
  },
  {
+  "kind": "fact",
+  "title": "Achievements are hardcoded in the executable -- and cheating cannot disable them",
+  "body": "The usual answer to this is folklore, so the binary was disassembled instead. There are <strong>57</strong> achievements, not 37. Exactly one <code>achievement_%d</code> format string exists, with one cross-reference, inside a single award function; scanning for every call to it finds 59 call sites carrying IDs 0-56. <strong>Not one of them tests a cheat flag.</strong> The <code>CHEATUSED</code> string appears only in save-serialisation and save-screen GUI code -- it is a cosmetic label on the save thumbnail. All 5,120 shipped scripts were parsed and none can award an achievement. So the console, save editing and mods cannot <em>disable</em> anything.",
+  "evidence": "achievement_%d  @ 0x9868A0   (1 xref)\nAwardAchievement @ 0x4010A0   -> SteamUserStats\n59 call sites, IDs {0..56}, no gaps, zero cheat-flag guards\n5,120 .ncs parsed: highest engine routine = 876 (vanilla range)"
+ },
+ {
+  "kind": "fact",
+  "title": "givecredits does not merely spare the credits achievement -- it is what awards it",
+  "body": "The console command is <code>givecredits</code>; there is no <code>addcredits</code>. Tracing the handler shows it passes through the cheat gate into <code>SetPartyGold</code>, and the 10,000-credit achievement check lives <em>inside that setter</em>. Only eight callers of <code>SetPartyGold</code> exist in the whole engine, two of them the merchant buy and sell paths -- so every route to credits funnels through the same check. A quirk found on the way: the handler floors any amount of 99 or less at 99.",
+  "evidence": "console \"givecredits\"  (0x7ABA90)\n  -> cheats gate       (0x7AB0D0)\n  -> GetPartyGold      (0x5812E0)\n  -> SetPartyGold      (0x581330)\n       +-- cmp [gold], 10000 -> AwardAchievement(33) @ 0x581395"
+ },
+ {
+  "kind": "fact",
+  "title": "About forty achievements are keyed to dialog.tlk line IDs -- which is why mods break them",
+  "body": "A dispatch function binary-searches its input against 46 hardcoded constants between 77,670 and 135,903. Each is an exact string reference; looked up in this install's dialog.tlk they resolve to real lines -- Mira joining the party, the Handmaiden joining, the pazaak Golden Card, Nihilus' mask. The engine is watching for <em>a specific line of text, by number, being shown</em>. Rewrite that dialogue node, or append to the TLK so the line carries a different id, and the achievement silently never fires. This explains every reported mod incompatibility, and it means purely graphical mods are <strong>provably</strong> safe -- they cannot touch DLG or TLK at all. The remaining ~17 achievements are engine state checks hooked into setters and are immune to dialogue mods.",
+  "evidence": "ID 19 <- StrRef 115525  \"[Mira has joined the party...]\"\nID 27 <- StrRef 117029  \"[The Handmaiden has joined your party...]\"\nID 23 <- StrRef 113927  \"Here, take this Golden Card...\"\nID 53 <- StrRef 100776  \"Look upon his face, then bring me the mask.\""
+ },
+ {
+  "kind": "fact",
+  "title": "PyKotor cannot re-serialise a savegame losslessly, so the save editor never tries",
+  "body": "A load-then-save through PyKotor's save API, with <strong>no edits at all</strong>, rewrites four of the five files and shrinks <code>savegame.sav</code> by about 19 KB on both of the real saves tested. Even one file at a time, GFF read-then-write is not byte-identical for partytable.res or globalvars.res. So the save editor parses the GFF binary header directly, locates one field's value bytes, and patches them in place -- the same prove-then-write discipline er-forge uses for param offsets. A write is refused if the field label is ambiguous, if the field is stored indirectly, if the file length changes, if more than four bytes differ, or if the field no longer holds the value that was just read.",
+  "evidence": "no-op load+save:\n  savegame.sav   986,505 -> 967,781   (-18,724 bytes)\n\nsurgical patch, credits 0 -> 250,000:\n  bytes changed  3\n  size           8,899 -> 8,899  unchanged\n  savegame.sav   SAME  sha 0f260504a7a2\n  globalvars.res SAME    savenfo.res SAME    screen.tga SAME\n  oracle refusal test: refused correctly"
+ },
+ {
+  "kind": "fact",
+  "title": "The cutscenes are natively 2.353:1, and this machine's monitor is 2.400:1",
+  "body": "KOTOR II's <code>.bik</code> movies are 640x272 -- cinemascope. On a 16:9 display they letterbox heavily, which is why upscale packs exist that bake 16:9 black bars into the files. On a 3840x1600 panel they very nearly fill the screen. That inverts the usual advice: the pack with baked-in bars would put a 2.353:1 image inside a 16:9 box inside a 2.40:1 screen, losing real resolution on all four sides. The 3440x1440 rescale set, at 2.389:1, is within about one percent of both the source and the display.",
+  "evidence": "vanilla .bik          640 x 272   = 2.353:1\nprimary display      3840 x 1600  = 2.400:1\nbest available pack  3440 x 1440  = 2.389:1"
+ },
+ {
+  "kind": "fact",
+  "title": "TSL still ships K1's Large body meshes and simply never points at them",
+  "body": "Searching this install turns up <code>pfbal</code>, <code>pfbbl</code>, <code>pfbcl</code> through <code>pfbjl</code> and the male equivalents -- the complete Large body set K1 used for its three body sizes. TSL kept the assets and pointed every appearance row at the Medium variants, apparently a schedule cut. So a fuller-figured character needs no new art: clone an appearance row and repoint its equipment slots at the Large meshes. Three caveats, all needing an in-game check: slots k, m and n have no Large variant, the dancer slot is single-size, and the Large underwear texture does not ship.",
+  "evidence": "pfbas  pfbam  pfbal      <- underwear  S / M / L\npfbbs  pfbbm  pfbbl      <- clothes\npfbcs..pfbjs  pfbcm..pfbjm  pfbcl..pfbjl   <- armour + robes\nappearance.2da: 671 rows x 94 columns, every row points at *M"
+ },
+ {
   "kind": "inference",
   "title": "Build on PyKotor in-process, not on a pile of external executables",
   "body": "PyKotor is the only thing in the KOTOR ecosystem that reads <em>and</em> writes every format the game ships, from one language, one process. Every alternative is either read-only for some formats (xoreos-tools has no model or walkmesh support), GUI-only (KOTOR Tool, MDLedit), or requires another runtime (MDLOps needs Perl, KotorBlender needs Blender). Shelling out buys nothing and costs typed objects and structured errors. It is LGPL, so linking is fine.",
@@ -87,6 +123,18 @@
   "kind": "inference",
   "title": "Treat every KOTOR path as case-insensitive",
   "body": "The Aspyr builds disagree with themselves about TexturePacks versus texturepack, and Vortex's own extension lists the lowercase singular. PyKotor ships a CaseAwarePath type and HoloPatcher advertises case-insensitive path handling as a headline feature -- both are responses to the same mess. Assume nothing about casing anywhere in this game's directory tree.",
+  "evidence": null
+ },
+ {
+  "kind": "inference",
+  "title": "Body proportions cannot be changed from 2DA values alone",
+  "body": "There is no scale column in appearance.2da. The only columns matching <code>*scale</code> are weaponscale, wing_tail_scale and the two helmet scalers -- all attachment props. <code>height</code> looks like a candidate and is not one: a rancor has height 1 and a human female player character has height 1.6, so it feeds camera framing and targeting rather than mesh size. Real proportion changes mean editing the MDL in KotorBlender, or repointing slots at a differently-shaped mesh that already exists.",
+  "evidence": null
+ },
+ {
+  "kind": "inference",
+  "title": "A full mod build and a complete achievement run are mutually exclusive -- do two passes",
+  "body": "Not because of cheating, which costs nothing, but because several Tier 1 mods in the canonical build rewrite exactly the dialogue that carries trigger string references. The clean answer is sequencing rather than compromise: run the achievements first on restoration plus every graphical, upscale, lightsaber and appearance mod -- all provably safe -- with the console enabled, since cheats satisfy the skill, credit, level and Force-power checks directly and genuinely speed the run. Achievements once earned are permanent. Then install the heavy narrative layer for the story playthrough.",
   "evidence": null
  }
 ]
