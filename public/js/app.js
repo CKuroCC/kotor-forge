@@ -557,6 +557,15 @@ RENDER.build = async root => {
     root.appendChild(ul2);
   }
 
+  /* --- backups ---------------------------------------------------------- */
+  const bk = b.backups;
+  if (bk) {
+    root.appendChild(el('h2', 'sec', esc(bk.name)));
+    const c = el('div', 'card');
+    c.appendChild(el('p', 'muted', esc(bk.body)));
+    root.appendChild(c);
+  }
+
   /* --- the verifier ----------------------------------------------------- */
   const vf = b.verifier;
   if (vf) {
